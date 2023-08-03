@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <play>
+        <volume value="100" maxValue="0" minValue="100"/>
+        <playing name=""/>
+    </play>
+</config>
