@@ -60,7 +60,7 @@ DeskVideo::DeskVideo()
 		{
 			emit TrayShow(m_nVolume);	//直接播放上次视频并直接显示托盘
 		}
-		});
+	});
 }
 
 DeskVideo::~DeskVideo() 
@@ -98,16 +98,20 @@ bool DeskVideo::ReplaceDesk()
 	}
 }
 
-void DeskVideo::SetVolume(float volume) {
+void DeskVideo::SetVolume(uchar volume) 
+{
 	this->m_nVolume = volume;
 	m_pPlayer->SetVolume(volume);
 }
 
-void DeskVideo::StopOrStart(int state) {
-	if (state) {
+void DeskVideo::StopOrStart(int state) 
+{
+	if (state) 
+	{
 		m_pPlayer->PlayVideo();
 	}
-	else {//暂停
+	else
+	{//暂停
 		m_pPlayer->PauseVideo();
 	}
 }

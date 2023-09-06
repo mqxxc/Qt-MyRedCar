@@ -13,7 +13,7 @@ public:
 	DeskVideo();
 	~DeskVideo();
 	bool ReplaceDesk();						//替换桌面
-	void SetVolume(float volume);								//设置音量
+	void SetVolume(uchar volume);			//设置音量
 
 
 private:

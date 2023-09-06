@@ -15,6 +15,7 @@
 //Elastic
 #ifdef Elastic_H
 #define mouse_sens 10					//鼠标对窗口边缘敏感程度
+#define StateMax 255
 #endif
 
 //DetaHandle
