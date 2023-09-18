@@ -9,7 +9,6 @@ VideoPalyer::VideoPalyer(QWidget* parent)
 	m_pPlayer = new QMediaPlayer();
 	m_pVideoWnd = new QVideoWidget(parent);
 	m_pVideoWnd->resize(parent->size());
-	m_pVideoWnd->show();
 	m_pPlayList = new QMediaPlaylist();
 	m_pPlayer->setPlaylist(m_pPlayList);
 	m_pPlayer->setVideoOutput(m_pVideoWnd);
@@ -30,6 +29,7 @@ void VideoPalyer::SetVideo(QString vpath)
 {
 	m_pPlayList->clear();
 	m_pPlayList->addMedia(QUrl(vpath));
+	m_pVideoWnd->show();
 }
 
 void VideoPalyer::PlayVideo()

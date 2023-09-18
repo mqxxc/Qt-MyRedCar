@@ -17,7 +17,7 @@ public:
 	static void setScaling(float scaling);		//设置窗口缩放比例
 	static int GetWnd_W();						//获取窗口大小
 	static ushort CurrentID();					//获取当前选中的单元id号
-	static void SetDatas(UnitMsgs* handle);	//设置数据源
+	static void SetDatas(UnitMsgs* handle);		//设置数据源
 	static void ReleaseAll();					//取消选择所有控件
 
 
@@ -26,10 +26,10 @@ private:
 	QMenu* m_pMenu_R;							//右键菜单
 	QVector<QAction*> m_arrMenu;				//菜单项
 	QEventLoop* input_loop;						//重命名文本输入框的事件循环
-	ushort m_nID;								//资源信息ID
+	int m_nID;									//资源信息ID
 	static ushort m_nWndW;						//窗口宽
 	static ushort m_nSelectID;					//被选中的单元的id
-	static UnitMsgs* m_pDataHandle;			//数据源
+	static UnitMsgs* m_pDataHandle;				//数据源
 
 	void InitUi();								//初始化ui界面
 	void InitMember();							//初始化变量
@@ -43,7 +43,7 @@ private:
 
 signals:
 	void UpdateUnits(int oldId);				//请求更新指定id号的单元状态
-	void RenameSig(int id,QString name);		//重命名信号
+	void RenameSig(int id, QString name);		//重命名信号
 	void DeleteSig(int id);						//删除信号
 
 

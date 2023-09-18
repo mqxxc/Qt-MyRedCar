@@ -1,10 +1,14 @@
-﻿#include<QProcess>
-#include<QLibrary>
-#include<QApplication>
+﻿#include <QProcess>
+#include <QLibrary>
+#include <QApplication>
 #define STARTUP_H
-#include"macro.h"
-#include"awaken_source.h"
-#include"StartUp.h"
+#include "macro.h"
+#include "qtmyredcar.h"
+#include "Tray.h"
+#include "DeskVideo.h"
+#include "awaken_source.h"
+#include "StartUp.h"
+#include "Config.h"
 
 StartUp::StartUp() 
 {
@@ -16,52 +20,52 @@ StartUp::StartUp()
 StartUp::~StartUp() 
 {
 	disconnect();
-	if (mainwid != nullptr) 
+	if (m_pMainWnd != nullptr)
 	{
-		delete mainwid;
+		delete m_pMainWnd;
 	}
-	delete desk;
-	delete tray;
+	delete m_pDesk;
+	delete m_pTray;
 }
 
 void StartUp::setApp(QApplication* app)
 {
-	this->app = app;
+	m_pApp = app;
 }
 
 void StartUp::awakenExe()
 {
-	if (mainwid != nullptr)
+	if (m_pMainWnd != nullptr)
 	{
-		if (mainwid->isMinimized()) 
-		{
-			mainwid->showNormal();
+		if (m_pMainWnd->isMinimized())
+		{//最小化
+			m_pMainWnd->showNormal();
 		}
 		else 
-		{
-			mainwid->hide();
-			mainwid->show();
+		{//在其他窗口后面
+			m_pMainWnd->hide();
+			m_pMainWnd->show();
 		}
 	}
 	else 
-	{
-		tray->hide();
+	{//最小化托盘状态
+		m_pTray->hide();
 		mainWidNew();
 	}
 }
 
 void StartUp::connectForOther() 
 {
-	connect(tray,  &Tray::setVolumeToDesk, desk, &DeskVideo::SetVolume);
-	connect(tray,  &Tray::mainExit,        this, &StartUp::exitToApp);
-	connect(tray,  &Tray::ShowMW,          this, &StartUp::mainAwaken);
-	connect(desk,  &DeskVideo::NoVideo,    this, &StartUp::mainWidNew);
-	connect(desk,  &DeskVideo::TrayShow,   tray, &Tray::setVolume);
-	connect(tray,  &Tray::stateToDesk,     desk, &DeskVideo::StopOrStart);
-	connect(tray,  &Tray::setVolumeToDesk, desk, &DeskVideo::SetVolume);
-	connect(desk,  &DeskVideo::LoadFinish, this, &StartUp::loadFinish);
-	connect(desk,  &DeskVideo::TrayShow,   tray, &Tray::setVolume);
-	connect(srever,&Server::Awaken,        this, &StartUp::awakenExe);
+	connect(m_pTray,  &Tray::setVolumeToDesk, m_pDesk, &DeskVideo::SetVolume);
+	connect(m_pTray,  &Tray::mainExit,        this, &StartUp::exitToApp);
+	connect(m_pTray,  &Tray::ShowMW,          this, &StartUp::mainAwaken);
+	connect(m_pDesk,  &DeskVideo::NoVideo,    this, &StartUp::mainWidNew);
+	connect(m_pDesk,  &DeskVideo::TrayShow,   m_pTray, &Tray::setVolume);
+	connect(m_pTray,  &Tray::stateToDesk,     m_pDesk, &DeskVideo::StopOrStart);
+	connect(m_pTray,  &Tray::setVolumeToDesk, m_pDesk, &DeskVideo::SetVolume);
+	connect(m_pDesk,  &DeskVideo::LoadFinish, this, &StartUp::loadFinish);
+	connect(m_pDesk,  &DeskVideo::TrayShow,   m_pTray, &Tray::setVolume);
+	connect(m_pSrever,&Server::Awaken,        this, &StartUp::awakenExe);
 }
 
 void StartUp::init()
@@ -71,74 +75,75 @@ void StartUp::init()
 
 void StartUp::initMember()
 {
-	load = nullptr;
-	loading();
-	mainwid = nullptr;
-	tray = new Tray();
-	desk = new DeskVideo();
-	srever = new Server();
+	m_pLoadProc = nullptr;
+	m_pMainWnd = nullptr;
+	m_pTray = new Tray;
+	m_pDesk = new DeskVideo;
+	m_pSrever = new Server;
 }
 
-void StartUp::loading()
+void StartUp::Loading()
 {
-	if (load == nullptr) 
+	if (m_pLoadProc == nullptr) 
 	{
-		load = new QProcess;
+		m_pLoadProc = new QProcess;
 	}
-	QString processPath = exePath + load_path;
-	load->start(processPath);
+
+	m_pLoadProc->start(CONFIG->m_strAppPath + "/" + load_path);
 }
 
 void StartUp::loadFinish()
 {
-	if (load != nullptr) 
+	if (m_pLoadProc != nullptr) 
 	{
-		load->terminate();
-		delete load;
-		load = nullptr;
+		m_pLoadProc->terminate();
+		delete m_pLoadProc;
+		m_pLoadProc = nullptr;
 	}
 }
 
 void StartUp::connectForMW()
 {
-	connect(mainwid, &QtMyRedCar::MainAppExit,		this, &StartUp::exitToApp);
-	connect(mainwid, &QtMyRedCar::WndToClear,		this, &StartUp::mainWidDelete);
-	connect(mainwid, &QtMyRedCar::upDesk,			desk, &DeskVideo::ReplaceDesk);
-	connect(mainwid, &QtMyRedCar::upDesk,			tray, &Tray::setState);
-	connect(mainwid, &QtMyRedCar::LoadFinishSig,    this, &StartUp::mainWidShow);
+	connect(m_pMainWnd, &QtMyRedCar::MainAppExit,		this, &StartUp::exitToApp);
+	connect(m_pMainWnd, &QtMyRedCar::WndToClear,		this, &StartUp::mainWidDelete);
+	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pDesk, &DeskVideo::ReplaceDesk);
+	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pTray, &Tray::setState);
+	connect(m_pMainWnd, &QtMyRedCar::LoadFinishSig,    this, &StartUp::mainWidShow);
 }
 
 void StartUp::exitToApp()
 {
-	app->exit();
+	m_pApp->exit();
 }
 
 void StartUp::mainWidNew()
 {
-	mainwid = new QtMyRedCar();
-	mainwid->show();
-	mainwid->hide();
+	Loading();
+	m_pMainWnd = new QtMyRedCar;
 	connectForMW();
+	m_pMainWnd->show();
+	m_pMainWnd->hide();
+	m_pMainWnd->IniUnits();
 }
 
 void StartUp::mainWidShow()
 {
 	loadFinish();
-	mainwid->show();
+	m_pMainWnd->show();
 }
 
 void StartUp::mainAwaken()
 {
-	loading();
+	Loading();
 	mainWidNew();
 }
 
 void StartUp::mainWidDelete() 
 {
-	if (mainwid != nullptr) 
+	if (m_pMainWnd != nullptr)
 	{
-		delete mainwid;
-		mainwid = nullptr;
-		tray->show();
+		delete m_pMainWnd;
+		m_pMainWnd = nullptr;
+		m_pTray->show();
 	}
 }

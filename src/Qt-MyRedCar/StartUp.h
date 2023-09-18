@@ -1,24 +1,14 @@
 ﻿#pragma once
+#include <QObject>
+class QtMyRedCar;
+class Tray;
+class DeskVideo;
 class QProcess;
 class Server;
-
-#include"qtmyredcar.h"
-#include"Tray.h"
-#include"DeskVideo.h"
-
 
 class StartUp : public QObject 
 {
 	Q_OBJECT
-
-private:
-	QtMyRedCar* mainwid;					//应用主窗口
-	Tray* tray;								//托盘
-	DeskVideo* desk;						//桌面视频类
-	QApplication* app;						//事件循环实例
-	QString exePath;						//程序运行路径
-	QProcess* load;							//加载界面进程
-	Server* srever;							//进程服务端
 
 public:	
 	StartUp();
@@ -27,16 +17,25 @@ public:
 	
 
 private:
+	QtMyRedCar* m_pMainWnd;					//应用主窗口
+	Tray* m_pTray;							//托盘
+	DeskVideo* m_pDesk;						//桌面视频类
+	QApplication* m_pApp;					//事件循环实例
+	QProcess* m_pLoadProc;					//加载界面进程
+	Server* m_pSrever;						//进程服务端
+
 	void init();
 	void initMember();
-	void loading();
+	void Loading();
 	void loadFinish();
 	void connectForMW();					//有关主窗口的信号联系
 	void connectForOther();					//其他类的信号联系
-	void exitToApp();						//结束事件循环退出应用					
+	void exitToApp();						//结束事件循环退出应用		
+
 
 signals:
 	void appExit();
+
 
 private slots:
 	void mainWidDelete();					//主窗口销毁

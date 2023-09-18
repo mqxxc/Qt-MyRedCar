@@ -1,9 +1,10 @@
-﻿#include<QWidget>               //基本窗口类
-#include<QEvent>                //qt事件类
-#include<QMouseEvent>           //移动事件类
+﻿#include <QWidget>               //基本窗口类
+#include <QHoverEvent>           //qt事件类
+#include <QMouseEvent>           //鼠标事件
 #define Elastic_H
 #include"macro.h"
 #include"Elastic.h"
+#pragma execution_character_set("utf-8")
 
 Elastic::Elastic(QWidget* parent) 
 {
@@ -149,7 +150,7 @@ void Elastic::MouseMoveEventHandler(QMouseEvent* e)
     {
         m_absolutePoint = e->globalPos();
         if (IsMouseMove())
-        {          //判断鼠标是否位于标题栏
+        { //判断鼠标是否位于标题栏
             QPoint tmp = m_absolutePoint - m_LTWndPoint;
             m_pSubstituteWnd->move(tmp);
         }
@@ -162,17 +163,17 @@ void Elastic::MouseMoveEventHandler(QMouseEvent* e)
 
 void Elastic::MousePressEventHandler(QMouseEvent* e) 
 {
-    if (e->button() == Qt::LeftButton) 
+    if (e->button() == Qt::LeftButton)
     {
         m_LTWndPoint = e->pos();
-        if (m_LTWndPoint.y() < m_nTitleHeight) 
-        {//鼠标在标题栏处按下
-            SetSubWndState(true);
-            SetMouseMoveState(IsNullPosition());
-        }
         if (!IsNullPosition())
         {//含有任意拉伸的向量
             SetSubWndState(true);
+        }
+        else if(m_LTWndPoint.y() < m_nTitleHeight)
+        {//鼠标在标题栏处按下
+            SetSubWndState(true);
+            SetMouseMoveState(true);
         }
         if (IsSubWndShow())
         {//显示替身窗口
@@ -253,7 +254,7 @@ inline bool Elastic::IsInRight()
 
 inline bool Elastic::IsNullPosition()
 {
-    return !(m_nState ^ 15);
+    return !(m_nState & 15);
 }
 
 inline bool Elastic::IsMouseLDown()

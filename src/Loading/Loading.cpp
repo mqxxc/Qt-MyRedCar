@@ -196,7 +196,7 @@ void View::drawBackground(QPainter* painter, const QRectF& rect)
 //Loading
 Loading::Loading() 
 {
-    this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::SubWindow | Qt::FramelessWindowHint);
     setFixedSize(900, 520);
     QString strImagePath = GetImgPath();
     m_pView = new View(strImagePath, this);

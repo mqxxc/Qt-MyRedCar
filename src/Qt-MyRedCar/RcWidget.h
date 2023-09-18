@@ -24,6 +24,8 @@ public:
 	void SetScaling(float fScaling);				//设置缩放比例
 	bool MoveFile(QString path);					//DXG改为拷贝视频文件而非移动
 	void Refresh();									//刷新资源单元为全显示
+	void ChangeCondition(SortCriteria condition);	//修改单元排序的条件
+	void IniUnits();
 
 
 private:
@@ -46,13 +48,11 @@ private:
 	int m_nWndH;			//窗口高
 	uchar m_nControlSig;				//控制信号
 	/*    
-	*从右边,第一位管理是否刷新，第二为判断正序或者倒序，第三位--第六位管理排序依据
+	*从右边,第一位管理是否刷新，第二为判断正序或者倒序
 	*1.	为1则刷新单元
 	*2.	为1则正序，为0则倒序
 	*/
 
-	//尝试初始化资源
-	void InitRc();				
 	//子控件相关操作
 	void InitMember();					//初始化成员变量
 	void InitUnitSize();				//初始化图像单元大小
@@ -77,7 +77,6 @@ public slots:
 	void Release(int id);						//选中单元取消选择其他单元
 	void fileRename(int id,QString name);		//文件重命名
 	void SearchUnits(QString name);				//筛选单元
-	void ChangeCondition(SortCriteria condition);//修改单元排序的条件
 	void ChangeOrder(bool state);				//改变单元的顺序
 
 

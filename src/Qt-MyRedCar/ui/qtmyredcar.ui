@@ -203,6 +203,9 @@ border-style:none;
         <layout class="QGridLayout" name="middle">
          <item row="0" column="0">
           <widget class="QScrollArea" name="scrollArea">
+           <property name="styleSheet">
+            <string notr="true">border:none</string>
+           </property>
            <property name="verticalScrollBarPolicy">
             <enum>Qt::ScrollBarAsNeeded</enum>
            </property>
@@ -217,9 +220,12 @@ border-style:none;
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>877</width>
-              <height>562</height>
+              <width>879</width>
+              <height>564</height>
              </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border:none</string>
             </property>
            </widget>
           </widget>
@@ -409,7 +415,7 @@ border-color: rgba(255, 255, 255, 0);</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(235, 255, 255,0.7);
+             <string notr="true">background-color: rgba(235, 255, 255,0.7);
 </string>
             </property>
             <property name="text">
@@ -573,7 +579,7 @@ border-style:none;
       <item>
        <widget class="QTextBrowser" name="titletext">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 127,0.1);
+         <string notr="true">background-color: rgba(255, 255, 127,0.1);
 border-style:none;</string>
         </property>
         <property name="lineWrapMode">
@@ -610,7 +616,7 @@ border-style:none;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border-style:none;
-background-color: rgb(170, 255, 255,0.4);</string>
+background-color: rgba(170, 255, 255,0.4);</string>
         </property>
         <property name="text">
          <string>-</string>
@@ -633,7 +639,7 @@ background-color: rgb(170, 255, 255,0.4);</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border-style:none;
-background-color: rgb(0, 85, 255,0.4);</string>
+background-color: rgba(0, 85, 255,0.4);</string>
         </property>
         <property name="text">
          <string>□</string>
@@ -656,7 +662,7 @@ background-color: rgb(0, 85, 255,0.4);</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border-style:none;
-background-color: rgb(255, 85, 0,0.4);</string>
+background-color: rgba(255, 85, 0,0.4);</string>
         </property>
         <property name="text">
          <string>×</string>
@@ -679,7 +685,7 @@ background-color: rgb(255, 85, 0,0.4);</string>
  </customwidgets>
  <resources>
   <include location="../res/qtmyredcar.qrc"/>
-  <include location="qtmyredcar.qrc"/>
+  <include location="../res/qtmyredcar.qrc"/>
  </resources>
  <connections>
   <connection>

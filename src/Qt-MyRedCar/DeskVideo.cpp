@@ -30,7 +30,8 @@ DeskVideo::DeskVideo()
 {
 	//初始化变量
 	m_pDeskWnd = new QWidget();
-	m_pPlayDll = new QLibrary("playVideo");
+	m_pPlayer = nullptr;
+	m_pPlayDll = new QLibrary("dll/playVideo");
 	m_nVolume = 100;
 	
 	HWND hProgman = FindWindow(L"Progman", 0);				//找到PM窗口
@@ -47,8 +48,10 @@ DeskVideo::DeskVideo()
 	EnumWindows(EnumWindowsProc, 0);
 
 	//其他初始化操作
-	m_pPlayDll->load();
-	m_pPlayer = ((VideoPalyer * (*)(QWidget*))(m_pPlayDll->resolve("getpvobj")))(m_pDeskWnd);
+	if (m_pPlayDll->load())
+	{
+		m_pPlayer = ((VideoPalyer * (*)(QWidget*))(m_pPlayDll->resolve("GetpPlayVideo")))(m_pDeskWnd);
+	}
 
 	//读取上次保存的设置信息
 	QTimer::singleShot(10, this, [=]() {

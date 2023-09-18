@@ -26,7 +26,7 @@ UnitMsg::UnitMsg(QXmlStreamAttributes* attributes)
 	}break;
 	}
 
-	m_dateUserTime.fromString(attributes->value("lastTime").toString());
+	m_dateUserTime.fromString(attributes->value("lastTime").toString(),"yyyy-MM-dd");
 	m_cState = 0;
 	SetLove(attributes->value("isLove").toString() == "1");
 }
@@ -37,11 +37,63 @@ UnitMsg::UnitMsg(QString strFileName, bool bHaveThumbnail)
 	m_strVideo = strFileName;
 	bHaveThumbnail ? m_strPhoto = strFileName + dePhotoS : m_strPhoto = dePhotoPath;
 	m_dateMportTime = QDate::currentDate();
-	m_dateUserTime.fromString(deusedTime);
+	m_dateUserTime.fromString(deusedTime, "yyyy-MM-dd");
 	m_source = Source::LOCAL;
 	m_cState = 0;
 }
 
+QString UnitMsg::WriteName()
+{
+	return m_strName;
+}
+
+QString UnitMsg::WritePhotoPath()
+{
+	return m_strPhoto;
+}
+
+QString UnitMsg::WriteVideoPath()
+{
+	return m_strVideo;
+}
+
+QString UnitMsg::WriteMportTime()
+{
+	return m_dateMportTime.toString("yyyy-MM-dd");
+}
+
+QString UnitMsg::WriteUserTime()
+{
+	return m_dateUserTime.toString("yyyy-MM-dd");
+}
+
+QString UnitMsg::WriteSource()
+{
+	switch (m_source)
+	{
+	case UnitMsg::Source::CRAFT:
+		return "0";
+		break;
+	case UnitMsg::Source::INTERNET:
+		return "2";
+		break;
+	default:
+		return "1";
+		break;
+	}
+}
+
+QString UnitMsg::WriteLove()
+{
+	if (IsLove())
+	{
+		return "1";
+	}
+	else
+	{
+		return "0";
+	}
+}
 
 QString UnitMsg::GetName()
 {

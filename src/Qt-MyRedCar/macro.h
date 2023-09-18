@@ -28,7 +28,7 @@
 #define deVideoS ".mp4"					//默认视频后缀
 #define dePhotoPath "defaultPhoto.jpg"	//默认图片名字
 #define deusedTime "2022-05-04"			//默认最后一次使用时间
-#define recordPath "init/in.txt"		//本地存储文件路径
+#define recordPath "/res/media/"		//本地存储文件路径
 #endif
 
 
@@ -44,7 +44,6 @@
 
 //RcWidget
 #ifdef RcWidget_H
-#define initTextPath "init/in.txt"		//缓存文件路径
 #define ratio 8							//控件与空隙的比
 #define dataPath "/data/"				//资源文件中间路径
 #define comboBox_onne "默认"			//筛选框0
@@ -54,6 +53,7 @@
 #define comboBox_love "喜欢"			//筛选框4
 #define deVideoS ".mp4"					//默认视频后缀
 #define dePhotoS ".jpg"					//缩略图默认后缀名
+#define maxControlSig 255				//控制信最大值
 #endif
 
 //QtMyRedCar
@@ -72,7 +72,7 @@
 #define Msg_about_link "https://space.bilibili.com/224669104?spm_id_from=333.1007.0.0"	//关于我的链接
 #define dialogTitle "选中文件"				//文本选择框标题栏
 #define dialogFilter "视频文件(*.mp4)"		//文本选择框文件类型选择器
-#define loadFinish "导入成功！ "	//本地文件导入成功提示文本
+#define loadFinish_Text "导入成功！ "	//本地文件导入成功提示文本
 #define loadFail "导入失败请稍后重试！"	//本地文件导入失败提示文本
 #define Msg_filter "抱歉，资源尚未分类，预计与创意工坊一起开放！\n未来可期"	//资源筛选文本提示
 #define sort_p "/rc/ico/sort_p.png"			//排序正序的图标路径
@@ -107,13 +107,7 @@
 #define error_deleteKetText "移除注册表项失败，请稍后重试 "		//移除注册表失败提示
 #endif // SET_H
 
-#ifdef MAIN_H
-#define IcoPath "rc/ico/33-9.png"
-#define error_loseTitle "你小子删我文件 "
-#define error_loseGSIFM "缺失getScreenInformation.dll文件！！！ "
-#define error_losePlayVideo "缺失playVideo.dll文件！！！ "
-#define error_loseSCreenshot "缺失Screenshot.dll文件！！！ "
-#define error_loseSaveOrRead "缺失SaveOrRead.dll文件！！！ "
-#define error_loseAwaken "缺失awaken_client.exe文件！！！ "
-#define error_loseLoading "缺失Loading.exe文件！！！ "
-#endif // MAIN_H
+#ifdef  UnitMsgs_H
+#define initTextPath "conf/dataMsg.xml"		//缓存文件路径
+#endif //  UnitMsgs_H
+

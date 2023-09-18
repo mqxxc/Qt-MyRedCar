@@ -113,7 +113,6 @@
     <ClCompile Include="StartUp.cpp" />
     <ClCompile Include="RcWidget.cpp" />
     <ClCompile Include="Set.cpp" />
-    <ClCompile Include="StaticRc.cpp" />
     <ClCompile Include="Tray.cpp" />
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="UnitMsg.cpp" />
@@ -129,7 +128,6 @@
     <QtMoc Include="RcWidget.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StaticRc.h" />
     <ClInclude Include="UnitMsg.h" />
     <QtMoc Include="DeskVideo.h" />
     <QtMoc Include="awaken_source.h" />

@@ -40,6 +40,11 @@ QtMyRedCar::~QtMyRedCar()
 	this->disconnect();
 }
 
+void QtMyRedCar::IniUnits()
+{
+	m_pUi->RcWid->IniUnits();
+}
+
 void QtMyRedCar::InitMember() 
 {
 	m_pDll = new QLibrary("playVideo");
@@ -101,7 +106,7 @@ void QtMyRedCar::Connects()
 	connect(m_pUi->RcWid, &RcWidget::IniFinish, this, &QtMyRedCar::LoadFinish);
 	connect(this,      &QtMyRedCar::search, m_pUi->RcWid, &RcWidget::SearchUnits);
 	connect(this,      &QtMyRedCar::ChangeUnitOrder, m_pUi->RcWid, &RcWidget::ChangeOrder);
-	connect(m_pUi->comboBox, SIGNAL(activated(QString)), m_pUi->RcWid, SLOT(ChangeCondition(QString)));
+	connect(m_pUi->comboBox, SIGNAL(activated(QString)), this, SLOT(ChangeCondition(QString)));
 }
 
 void QtMyRedCar::InitSearch() 
@@ -224,7 +229,7 @@ void QtMyRedCar::on_lod_clicked()
 		QString path = fileNames.join("");
 		if (m_pUi->RcWid->MoveFile(path)) 
 		{
-			QMessageBox::about(this, MsgTitle, loadFinish);
+			QMessageBox::about(this, MsgTitle, loadFinish_Text);
 		}
 		else 
 		{
@@ -320,6 +325,30 @@ void QtMyRedCar::on_setbox_clicked()
 void QtMyRedCar::LoadFinish() 
 {
 	emit LoadFinishSig();
+}
+
+void QtMyRedCar::ChangeCondition(QString strCondition)
+{
+	if (strCondition == comboBox1)
+	{
+		m_pUi->RcWid->ChangeCondition(RcWidget::SortCriteria::name);
+	}
+	else if (strCondition == comboBox2)
+	{
+		m_pUi->RcWid->ChangeCondition(RcWidget::SortCriteria::ImportTime);
+	}
+	else if (strCondition == comboBox3)
+	{
+		m_pUi->RcWid->ChangeCondition(RcWidget::SortCriteria::lastTime);
+	}
+	else if (strCondition == comboBox4)
+	{
+		m_pUi->RcWid->ChangeCondition(RcWidget::SortCriteria::love);
+	}
+	else
+	{
+		m_pUi->RcWid->ChangeCondition(RcWidget::SortCriteria::onoe);
+	}
 }
 
 bool QtMyRedCar::eventFilter(QObject* obj, QEvent* even) 

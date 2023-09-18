@@ -17,6 +17,16 @@ public:
 	* 1.为1则喜欢，为0为非喜欢
 	* 2.为1则隐藏，为0则没有隐藏
 	*/
+
+	UnitMsg(QXmlStreamAttributes* attributes);
+	UnitMsg(QString strFileName, bool bHaveThumbnail = true);
+	QString WriteName();
+	QString WritePhotoPath();
+	QString WriteVideoPath();
+	QString WriteMportTime();
+	QString WriteUserTime();
+	QString WriteSource();
+	QString WriteLove();
 	QString GetName();
 	QString GetPhotoPath();
 	QString GetVideoPath();
@@ -72,8 +82,4 @@ private:
 	QDate m_dateUserTime;		//最后一次使用时间
 	Source m_source;			//来源
 	uchar m_cState;				//状态
-
-	UnitMsg(QXmlStreamAttributes* attributes);
-	UnitMsg(QString strFileName, bool bHaveThumbnail = true);
-	friend class UnitMsgs;
 };

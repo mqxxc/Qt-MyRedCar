@@ -1,13 +1,12 @@
 ﻿#include <QDir>
 #include <QFile>
-#include <QTextStream>
 #include <QMap>
 #include <QLibrary>
-#include <QTimer>
 #include <QWheelEvent>
 #include <QCollator>
 #define RcWidget_H
 #include "macro.h"
+#include "Config.h"
 #include "RcWidget.h"
 #include "Unit.h"
 #include "UnitMsgs.h"
@@ -20,19 +19,11 @@ RcWidget::RcWidget(QWidget* parent)
 //其他初始化
 	InitMember();
 	InitUnitSize();
-
-//延迟初始化
-	QTimer::singleShot(10, this, [=]() {
-		InitUnit(1);
-		RefreshUnit();
-		InitRc();
-		SetRefreshbit(true);
-		   }); 
-	
 }
 
 RcWidget::~RcWidget() 
 {
+	m_pRcs->SaveUnitMsgs();
 //将本次运行的各种数据进行保存到本地缓存文件
 	delete m_pRcs;
 //回收units
@@ -47,19 +38,13 @@ void RcWidget::SetScaling(float fScaling)
 	Unit::setScaling(fScaling);
 }
 
-void RcWidget::InitRc()
-{
-	if (m_pRcs->Count()==0)
-	{
-	}
-}
-
 void RcWidget::InitMember()
 {
-	m_pRcs = new UnitMsgs();
+	m_pRcs = new UnitMsgs;
 	SetRefreshbit(false);
 	SetOrder(true);
 	m_sortCriteria = SortCriteria::onoe;
+	m_nControlSig = 2;
 }
 
 void RcWidget::InitUnit(int i)
@@ -94,7 +79,8 @@ void RcWidget::RefreshUnit()
 		{
 			ShowUnit(*it);
 		}
-	}else {
+	}else 
+	{
 		for (QList<ushort>::const_reverse_iterator it = m_listIDList.rbegin(); it != m_listIDList.rend(); ++it) 
 		{
 			ShowUnit(*it);
@@ -136,7 +122,6 @@ void RcWidget::SearchUnits(QString name)
 		}
 	}
 	RefreshUnit();
-
 }
 
 void RcWidget::ChangeCondition(SortCriteria condition)
@@ -193,6 +178,14 @@ void RcWidget::ChangeCondition(SortCriteria condition)
 	}
 }
 
+void RcWidget::IniUnits()
+{
+	m_pRcs->ReadUnitMsgs();
+	InitUnit(0);
+	RefreshUnit();
+	SetRefreshbit(true);
+}
+
 void RcWidget::ChangeOrder(bool state)
 {
 	SetOrder(state);
@@ -218,20 +211,36 @@ void RcWidget::ReckonNext(){
 
 inline void RcWidget::SetRefreshbit(bool bRefresh)
 {
+	if (bRefresh)
+	{
+		m_nControlSig |= 1;
+	}
+	else
+	{
+		m_nControlSig &= maxControlSig ^ 1;
+	}
 }
 
 inline bool RcWidget::IsRefresh()
 {
-	return false;
+	return m_nControlSig & 1;
 }
 
 inline bool RcWidget::IsNormal()
 {
-	return false;
+	return m_nControlSig & 2;
 }
 
 inline void RcWidget::SetOrder(bool bNormal)
 {
+	if (bNormal)
+	{
+		m_nControlSig |= 2;
+	}
+	else
+	{
+		m_nControlSig &= maxControlSig ^ 2;
+	}
 }
 
 bool RcWidget::MoveFile(QString path)
@@ -275,11 +284,6 @@ void RcWidget::resizeEvent(QResizeEvent* e)
 	m_nWndW = this->size().width();
 	m_nWndH = this->size().height();
 	InitUnitSize();
-	if (m_nControlSig&1) 
-	{
-
-		RefreshUnit();
-	}
 }
 
 void RcWidget::mousePressEvent(QMouseEvent* event)
@@ -290,7 +294,7 @@ void RcWidget::mousePressEvent(QMouseEvent* event)
 
 void RcWidget::Release(int id)
 {
-	if (id != 0)
+	if (id != -1)
 	{
 		emit SelectUnit(m_pRcs->GetData(id)->GetVideoPath());
 	}

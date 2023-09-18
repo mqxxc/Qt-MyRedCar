@@ -15,6 +15,7 @@ class QtMyRedCar : public QWidget
 public:
     QtMyRedCar(QWidget* parent = nullptr);
     ~QtMyRedCar();
+    void IniUnits();
 
 
 private:
@@ -65,6 +66,7 @@ private slots:
     void on_setbox_clicked();                           //设置按钮
     //middle
     void LoadFinish();                                  //资源窗口加载完成
+    void ChangeCondition(QString strCondition);         //改变排序条件
     //bottom
     void on_originality_clicked();                      //浏览创意工坊
     void on_about_clicked();                            //嘤起up

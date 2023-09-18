@@ -1,6 +1,8 @@
 ﻿#pragma once
 //设置主窗口为橡皮筋式窗口
 #include<QObject>
+class QHoverEvent;
+class QMouseEvent;
 
 class Elastic :public QObject 
 {

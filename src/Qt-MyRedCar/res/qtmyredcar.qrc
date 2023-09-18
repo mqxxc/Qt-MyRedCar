@@ -4,5 +4,6 @@
         <file alias="funnel">漏斗.png</file>
         <file>ico.png</file>
         <file alias="author">portrait.jpg</file>
+        <file alias="taskbar">taskbar.png</file>
     </qresource>
 </RCC>
