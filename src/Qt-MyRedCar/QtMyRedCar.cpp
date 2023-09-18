@@ -30,7 +30,10 @@ QtMyRedCar::QtMyRedCar(QWidget* parent) : QWidget(parent)
 QtMyRedCar::~QtMyRedCar() 
 {
 	delete m_pEvenRoot;
-	delete m_pPlayer;
+	if (m_pPlayer == nullptr)
+	{
+		delete m_pPlayer;
+	}
 	if (m_pDll->isLoaded())
 	{
 		m_pDll->unload();

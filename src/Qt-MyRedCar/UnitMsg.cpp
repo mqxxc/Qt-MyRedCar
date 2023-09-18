@@ -102,12 +102,12 @@ QString UnitMsg::GetName()
 
 QString UnitMsg::GetPhotoPath()
 {
-	return CONFIG->m_strAppPath + "/" + recordPath + m_strName + "/" + m_strPhoto;
+	return CONFIG->m_strAppPath + recordPath + m_strName + "/" + m_strPhoto;
 }
 
 QString UnitMsg::GetVideoPath()
 {
-	return CONFIG->m_strAppPath + "/" + recordPath + m_strName + "/" + m_strVideo;
+	return CONFIG->m_strAppPath + recordPath + m_strName + "/" + m_strVideo;
 }
 
 QDate UnitMsg::GetMportTime()

@@ -16,11 +16,11 @@ UnitMsgs::UnitMsgs()
 
 UnitMsgs::~UnitMsgs()
 {
-	while (!m_arrDatas.empty())
+	if (!m_arrDatas.isEmpty())
 	{
-		for (QVector<UnitMsg*>::const_iterator ti = m_arrDatas.cbegin() + 1; ti != m_arrDatas.cend(); ++ti)
+		for (int i = 0; i < m_arrDatas.size(); ++i)
 		{
-			delete (*ti);
+			delete m_arrDatas[i];
 		}
 	}
 }
@@ -98,10 +98,11 @@ void UnitMsgs::SaveUnitMsgs()
 		return;
 	}
 	QXmlStreamWriter dataWriter(&file);
+	dataWriter.setAutoFormatting(true);
 	dataWriter.writeStartDocument();
 	dataWriter.writeStartElement("IniRc");
 	dataWriter.writeStartElement("Items");
-	for (QVector<UnitMsg*>::const_iterator it = m_arrDatas.cbegin() + 1; it != m_arrDatas.cend(); ++it)
+	for (QVector<UnitMsg*>::const_iterator it = m_arrDatas.cbegin(); it != m_arrDatas.cend(); ++it)
 	{
 		dataWriter.writeEmptyElement("Item");
 		dataWriter.writeAttribute("name", (*it)->WriteName());
@@ -111,6 +112,7 @@ void UnitMsgs::SaveUnitMsgs()
 		dataWriter.writeAttribute("downloadTime", (*it)->WriteMportTime());
 		dataWriter.writeAttribute("isLove", (*it)->WriteLove());
 	}
+	dataWriter.writeEndElement();
 	dataWriter.writeEndElement();
 	dataWriter.writeEndDocument();
 }

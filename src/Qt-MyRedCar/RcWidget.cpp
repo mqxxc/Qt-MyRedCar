@@ -27,9 +27,9 @@ RcWidget::~RcWidget()
 //将本次运行的各种数据进行保存到本地缓存文件
 	delete m_pRcs;
 //回收units
-	for (QVector<Unit*>::iterator ti = m_arrUnits.begin(); ti != m_arrUnits.end(); ++ti)
+	for (int i = 0; i < m_arrUnits.size(); ++i)
 	{
-		delete (*ti);
+		delete m_arrUnits[i];
 	}
 }
 
@@ -47,12 +47,12 @@ void RcWidget::InitMember()
 	m_nControlSig = 2;
 }
 
-void RcWidget::InitUnit(int i)
+void RcWidget::CreateUnit(int i)
 {
 	Unit::SetDatas(m_pRcs);
 	for (; i < m_pRcs->Count();++i) 
 	{
-		m_arrUnits[i] = new Unit(i, this);
+		m_arrUnits.insert(i, new Unit(i, this));
 		connect(m_arrUnits[i], &Unit::UpdateUnits,  this, &RcWidget::Release);
 		connect(m_arrUnits[i], &Unit::RenameSig, this, &RcWidget::fileRename);
 		m_listIDList.append(i);
@@ -181,7 +181,7 @@ void RcWidget::ChangeCondition(SortCriteria condition)
 void RcWidget::IniUnits()
 {
 	m_pRcs->ReadUnitMsgs();
-	InitUnit(0);
+	CreateUnit(0);
 	RefreshUnit();
 	SetRefreshbit(true);
 }
@@ -195,7 +195,7 @@ void RcWidget::ChangeOrder(bool state)
 void RcWidget::AddUnit()
 {
 	int i = m_arrUnits.size() + 1;
-	InitUnit(i);
+	CreateUnit(i);
 	m_arrUnits[i]->move(m_nLastUnitX, m_nLastUnitY);
 	m_arrUnits[i]->show();
 	ReckonNext();

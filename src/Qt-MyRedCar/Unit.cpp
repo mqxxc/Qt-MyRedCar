@@ -16,10 +16,10 @@ Unit::Unit(int id, QWidget* parent) : QWidget(parent)
     this->m_nID = id;
     
     //其他初始化
-    InitMember();                     //初始化其他变量
-    SetWndW();                       //初始化窗口大小
-    InitUi();                         //初始化界面属性
-    InitRMenu();                     //初始化右键菜单
+    InitMember();                       //初始化其他变量
+    SetWndW();                          //初始化窗口大小
+    InitUi();                           //初始化界面属性
+    InitRMenu();                        //初始化右键菜单
 }
 
 void Unit::SetWndW()
@@ -90,9 +90,9 @@ void Unit::InitMember()
 
 Unit::~Unit()
 {
-    for (QVector<QAction*>::const_iterator it = m_arrMenu.cbegin(); it != m_arrMenu.cend(); ++it)
+    for (int i = 0; i < m_arrMenu.size(); ++i)
     {
-        delete it;
+        delete m_arrMenu[i];
     }
     delete m_pMenu_R;
 

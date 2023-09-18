@@ -56,7 +56,7 @@ private:
 	//子控件相关操作
 	void InitMember();					//初始化成员变量
 	void InitUnitSize();				//初始化图像单元大小
-	void InitUnit(int i);				//从i开始初始化单元
+	void CreateUnit(int i);				//从第i个元素信息创建UnitWnd
 	void RefreshUnit();					//刷新所有单元
 	//其他辅助函数
 	void ShowUnit(int sum);				//辅助放置单元
