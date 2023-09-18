@@ -60,13 +60,13 @@
 #ifdef QTMYREDCAR_H
 #define Max_8bit 255				//uchar最大值
 #define titleh 60					//标题栏高度
-#define icoPath "/rc/ico/33.png"	//应用图标路径
+#define icoPath "/res/images/ico/33.png"	//应用图标路径
 #define comboBox1 "名字"			//筛选框1
 #define comboBox2 "添加时间 "		//筛选框2
 #define comboBox3 "最后使用 "		//筛选框3
 #define comboBox4 "喜欢 "			//筛选框4
 #define inputTxt "搜索 "			//搜索框文本
-#define inputIco "/rc/ico/search.png"		//搜索框右侧图标
+#define inputIco "/res/images/ico/search.png"		//搜索框右侧图标
 #define MsgTitle "嘤嘤嘤 "			//信息提示框标题
 #define Msg_originality "抱歉，作者还在学爬虫，所以此功能暂未开放！ "		//浏览创意工坊文本提示
 #define Msg_about_link "https://space.bilibili.com/224669104?spm_id_from=333.1007.0.0"	//关于我的链接
@@ -75,8 +75,8 @@
 #define loadFinish_Text "导入成功！ "	//本地文件导入成功提示文本
 #define loadFail "导入失败请稍后重试！"	//本地文件导入失败提示文本
 #define Msg_filter "抱歉，资源尚未分类，预计与创意工坊一起开放！\n未来可期"	//资源筛选文本提示
-#define sort_p "/rc/ico/sort_p.png"			//排序正序的图标路径
-#define sort_r "/rc/ico/sort_r.png"			//排序倒叙的图标路径
+#define sort_p "/res/images/ico/sort_p.png"			//排序正序的图标路径
+#define sort_r "/res/images/ico/sort_r.png"			//排序倒叙的图标路径
 #endif
 
 #ifdef STARTUP_H
@@ -84,8 +84,7 @@
 #endif // STARTUP_H
 
 #ifdef TRAY_H
-#define icoPath "F:/C++/Qt-MyRedCar/Qt-MyRedCar/x64/Debug/rc/ico/33-9.png"
-//"rc/ico/33.png"				//托盘图标路径
+#define icoPath "/res/images/ico/33.png"	//托盘图标路径
 #define TrayTitle "MyRedCar"				//托盘提示文本
 #define menu1 "打开 "						//菜单项1
 #define menu2 "设置音量 "					//菜单项2
@@ -93,8 +92,8 @@
 #define menu3_0 "继续 "						//菜单项3.0
 #define menu4 "关于 "						//菜单项4
 #define menu5 "退出 "						//菜单项5
-#define muteIco "rc/ico/Mute.png"			//静音图标路径
-#define volumeIco "rc/ico/volume.png"		//音量图标路径
+#define muteIco "res/images/ico/Mute.png"			//静音图标路径
+#define volumeIco "res/images/ico/volume.png"		//音量图标路径
 #endif // TRAY_H
 
 #ifdef SET_H

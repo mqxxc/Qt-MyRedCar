@@ -5,6 +5,7 @@ class Tray;
 class DeskVideo;
 class QProcess;
 class Server;
+#pragma execution_character_set("utf-8")
 
 class StartUp : public QObject 
 {

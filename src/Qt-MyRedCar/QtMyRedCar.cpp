@@ -301,7 +301,8 @@ void QtMyRedCar::on_order_clicked()
 {
 	if (IsNormalOrder())
 	{
-		QPixmap pixmap(CONFIG->m_strAppPath+sort_p);
+		QString strTest = CONFIG->m_strAppPath + sort_p;
+		QPixmap pixmap(CONFIG->m_strAppPath + sort_p);
 		int w = m_pUi->order->geometry().width();
 		QPixmap fitpixmap = pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 		m_pUi->order->setIcon(QIcon(fitpixmap));

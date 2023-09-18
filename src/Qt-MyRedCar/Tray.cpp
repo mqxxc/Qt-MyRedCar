@@ -10,6 +10,7 @@
 #include"About.h"
 #include"Tray.h"
 #include "Config.h"
+#pragma execution_character_set("utf-8")
 
 Tray::Tray()
 {
@@ -31,7 +32,8 @@ Tray::~Tray()
 {
     delete loop;
     delete volumScr;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i) 
+    {
        delete list[i];
     }
     delete list;
@@ -40,15 +42,17 @@ Tray::~Tray()
     delete ico;
 }
 
-void Tray::init(){
+void Tray::init()
+{
     initmenu();
     inittray();
     initScr();
 }
 
-void Tray::inittray(){
-    ico->setIcon(QIcon(icoPath));               //设定托盘图标
-    ico->setToolTip(TrayTitle);                        //提示文字
+void Tray::inittray()
+{
+    ico->setIcon(QIcon(CONFIG->m_strAppPath + icoPath));                       //设定托盘图标
+    ico->setToolTip(TrayTitle);                         //提示文字
     ico->setContextMenu(menu);
     ico->hide();
 }
@@ -126,7 +130,8 @@ void Tray::hide(){
     ico->hide();
 }
 
-void Tray::menuVolume() {
+void Tray::menuVolume() 
+{
     volumeico->installEventFilter(this);
     QTimer::singleShot(10, this, [=]() {
         volumScr->show();
@@ -177,8 +182,10 @@ void Tray::eventHandler(QSystemTrayIcon::ActivationReason reason){
 }
 
 bool Tray::eventFilter(QObject* object, QEvent* event){
-    if (object == volumeico) {
-        if (event->type() == QEvent::MouseButtonPress){
+    if (object == volumeico) 
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
             vIcoState = !vIcoState;
             changeScrIco();
             if (vIcoState) {
@@ -192,7 +199,8 @@ bool Tray::eventFilter(QObject* object, QEvent* event){
         return true;
         }
     }
-    if (event->type() == QEvent::MouseButtonPress) {        //点击任意处关闭音量调节
+    if (event->type() == QEvent::MouseButtonPress) 
+    {        //点击任意处关闭音量调节
         QObject* op = object;
         volumScr->hide();
         volumeico->removeEventFilter(this);             //关闭事件过滤
@@ -202,7 +210,8 @@ bool Tray::eventFilter(QObject* object, QEvent* event){
     return QObject::eventFilter(object, event);
 }
 
-void Tray::menuOpen() {
+void Tray::menuOpen() 
+{
     emit ShowMW();
     hide();
 }
