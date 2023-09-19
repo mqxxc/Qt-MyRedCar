@@ -50,7 +50,7 @@ void QtMyRedCar::IniUnits()
 
 void QtMyRedCar::InitMember() 
 {
-	m_pDll = new QLibrary("playVideo");
+	m_pDll = new QLibrary(CONFIG->m_strAppPath + "dll/playVideo");
 	m_pPlayer = nullptr;
 	m_pEvenRoot = new Elastic(this);
 	m_nState = 2;
@@ -270,7 +270,10 @@ void QtMyRedCar::previewVideo(QString path)
 	{
 		if (m_pPlayer == nullptr) 
 		{
-			m_pDll->load();
+			if (!m_pDll->load())
+			{
+				return;
+			}
 			m_pPlayer = ((VideoPalyer * (*)(QWidget*))
 				(m_pDll->resolve("getpvobj")))(m_pUi->videwid);
 		}
@@ -299,25 +302,20 @@ void QtMyRedCar::on_filter_clicked()
 
 void QtMyRedCar::on_order_clicked() 
 {
+	QPixmap pixmap;
 	if (IsNormalOrder())
 	{
-		QString strTest = CONFIG->m_strAppPath + sort_p;
-		QPixmap pixmap(CONFIG->m_strAppPath + sort_p);
-		int w = m_pUi->order->geometry().width();
-		QPixmap fitpixmap = pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-		m_pUi->order->setIcon(QIcon(fitpixmap));
+		pixmap.load(CONFIG->m_strAppPath + sort_p);
 		SetOrderState(false);
-		emit ChangeUnitOrder(IsNormalOrder());
 	}
 	else 
 	{
-		QPixmap pixmap(CONFIG->m_strAppPath+sort_r);
-		int w = m_pUi->order->geometry().width();
-		QPixmap fitpixmap = pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-		m_pUi->order->setIcon(QIcon(fitpixmap));
+		pixmap.load(CONFIG->m_strAppPath+sort_r);
 		SetOrderState(true);
-		emit ChangeUnitOrder(IsNormalOrder());
 	}
+	int w = m_pUi->order->geometry().width();
+	m_pUi->order->setIcon(QIcon(pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+	emit ChangeUnitOrder(IsNormalOrder());
 }
 
 void QtMyRedCar::on_setbox_clicked() 

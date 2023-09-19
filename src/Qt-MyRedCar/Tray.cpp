@@ -57,7 +57,8 @@ void Tray::inittray()
     ico->hide();
 }
 
-void Tray::initmenu(){
+void Tray::initmenu()
+{
     list[0] = new QAction(menu1);
     list[1] = new QAction(menu2);
     list[1]->setData(1);
@@ -65,7 +66,8 @@ void Tray::initmenu(){
     list[2]->setData(1);
     list[3] = new QAction(menu4);
     list[4] = new QAction(menu5);
-    for (int i = 0; i < 5;++i) {
+    for (int i = 0; i < 5;++i) 
+    {
         menu->addAction(list[i]);
     }
     connect(list[0], SIGNAL(triggered(bool)), this, SLOT(menuOpen()));
@@ -75,7 +77,8 @@ void Tray::initmenu(){
     connect(list[4], SIGNAL(triggered(bool)), this, SLOT(menuExit()));
 }
 
-void Tray::initScr(){
+void Tray::initScr()
+{
     volumScr->setFixedSize(40, 150);
     QPoint workSize = CONFIG->GetWorkDesktopPoint_RB();
     volumScr->move((workSize.x() - volumScr->width()),
@@ -94,44 +97,52 @@ void Tray::initScr(){
     volumScr->hide();
 }
 
-void Tray::connects(){
+void Tray::connects()
+{
     connect(scr, &QSlider::valueChanged,this,&Tray::setVolumFish);
     connect(ico, &QSystemTrayIcon::activated, this, &Tray::eventHandler);
 }
 
-void Tray::setVolumFish(){
-    if (scr->value() != 0) {
+void Tray::setVolumFish()
+{
+    if (scr->value() != 0)
+    {
         vIcoState = true;
-        changeScrIco();
+        ChangeScrIco();
     }
     emit setVolumeToDesk(scr->value());
 }
 
-void Tray::changeScrIco(){
-    if (!vIcoState || oldVolume == 0) {
-        QImage img(muteIco);
-        img = img.scaled(20, 20, Qt::KeepAspectRatio);
-        volumeico->setPixmap(QPixmap::fromImage(img));
+void Tray::ChangeScrIco()
+{
+    QPixmap pixmap;
+    if (!vIcoState || oldVolume == 0) 
+    {
+        pixmap.load(CONFIG->m_strAppPath + muteIco);
         vIcoState = false;
     }
-    else {
-        QImage img(volumeIco);
-        img = img.scaled(20, 20, Qt::KeepAspectRatio);
-        volumeico->setPixmap(QPixmap::fromImage(img));
+    else 
+    {
+        pixmap.load(CONFIG->m_strAppPath + volumeIco);
         vIcoState = true;
     }
+    int w = volumeico->geometry().width();
+    volumeico->setPixmap(pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
-void Tray::show(){
+void Tray::show()
+{
     ico->show();
 }
 
-void Tray::hide(){
+void Tray::hide()
+{
     ico->hide();
 }
 
 void Tray::menuVolume() 
 {
+    ChangeScrIco();
     volumeico->installEventFilter(this);
     QTimer::singleShot(10, this, [=]() {
         volumScr->show();
@@ -140,12 +151,14 @@ void Tray::menuVolume()
 }
 
 void Tray::menuState(){
-    if (list[2]->data() == 1) {
+    if (list[2]->data() == 1) 
+    {
         emit stateToDesk(0);//暂停播放
         list[2]->setText(menu3_0);
         list[2]->setData(0);
     }  
-    else {
+    else 
+    {
         emit stateToDesk(1);//继续
         list[2]->setText(menu3_1);
         list[2]->setData(1);
@@ -158,42 +171,51 @@ void Tray::menuAbout()
     about.exec();
 }
 
-void Tray::menuExit(){
+void Tray::menuExit()
+{
     hide();
     emit mainExit();
 }
 
-void Tray::setVolume(int volume){
+void Tray::setVolume(int volume)
+{
     show();
     oldVolume = volume;
     scr->setValue(volume);
-    changeScrIco();
+    ChangeScrIco();
 }
 
-void Tray::setState(){
+void Tray::setState()
+{
     list[2]->setText(menu3_1);
     list[2]->setData(1);
 }
 
-void Tray::eventHandler(QSystemTrayIcon::ActivationReason reason){
-    if (reason == QSystemTrayIcon::DoubleClick) {
+void Tray::eventHandler(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::DoubleClick) 
+    {
         menuOpen();
     }
 }
 
-bool Tray::eventFilter(QObject* object, QEvent* event){
+bool Tray::eventFilter(QObject* object, QEvent* event)
+{
     if (object == volumeico) 
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
             vIcoState = !vIcoState;
-            changeScrIco();
-            if (vIcoState) {
+            ChangeScrIco();
+            if (vIcoState) 
+            {
                 scr->setValue(oldVolume);
                 emit setVolumeToDesk(oldVolume);
             }
-            else {
+            else 
+            {
                 oldVolume = scr->value();
+                scr->setValue(0);
                 emit setVolumeToDesk(0);
             }
         return true;

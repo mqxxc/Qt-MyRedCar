@@ -92,8 +92,8 @@
 #define menu3_0 "继续 "						//菜单项3.0
 #define menu4 "关于 "						//菜单项4
 #define menu5 "退出 "						//菜单项5
-#define muteIco "res/images/ico/Mute.png"			//静音图标路径
-#define volumeIco "res/images/ico/volume.png"		//音量图标路径
+#define muteIco "/res/images/ico/Mute.png"			//静音图标路径
+#define volumeIco "/res/images/ico/volume.png"		//音量图标路径
 #endif // TRAY_H
 
 #ifdef SET_H

@@ -38,7 +38,7 @@ private:
 	void initScr();									//初始化音量条
 	void connects();								//建立联系
 	void setVolumFish();							//音量设置完成
-	void changeScrIco();
+	void ChangeScrIco();							//改变音量滑块下图标
 
 
 signals:
