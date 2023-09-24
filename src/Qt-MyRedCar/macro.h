@@ -110,3 +110,6 @@
 #define initTextPath "conf/dataMsg.xml"		//缓存文件路径
 #endif //  UnitMsgs_H
 
+#ifdef  CONFIG_H
+#define ConfigPath "/conf/config.xml"
+#endif //  CONFIG_H

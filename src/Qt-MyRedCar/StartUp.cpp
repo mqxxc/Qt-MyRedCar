@@ -63,7 +63,6 @@ void StartUp::connectForOther()
 	connect(m_pDesk,  &DeskVideo::TrayShow,   m_pTray, &Tray::setVolume);
 	connect(m_pTray,  &Tray::stateToDesk,     m_pDesk, &DeskVideo::StopOrStart);
 	connect(m_pDesk,  &DeskVideo::LoadFinish, this, &StartUp::loadFinish);
-	connect(m_pDesk,  &DeskVideo::TrayShow,   m_pTray, &Tray::setVolume);
 	connect(m_pSrever,&Server::Awaken,        this, &StartUp::awakenExe);
 }
 

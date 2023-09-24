@@ -42,7 +42,7 @@ private:
 
 
 signals:
-	void setVolumeToDesk(float value);				//设置壁纸音量
+	void setVolumeToDesk();							//设置壁纸音量
 	void stateToDesk(int state);					//暂停或者开始播放视频
 	void mainExit();								//主程序退出
 	void ShowMW();									//主窗口显示
@@ -58,6 +58,6 @@ public slots:
 	void menuState();								//设置视频播放状态
 	void menuAbout();								//关于
 	void menuExit();								//退出
-	void setVolume(int volume);						//设置音量
+	void setVolume();								//设置音量
 	void setState();								//设置视频播放状态
 };

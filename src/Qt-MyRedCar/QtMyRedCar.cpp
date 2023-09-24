@@ -50,7 +50,7 @@ void QtMyRedCar::IniUnits()
 
 void QtMyRedCar::InitMember() 
 {
-	m_pDll = new QLibrary(CONFIG->m_strAppPath + "dll/playVideo");
+	m_pDll = new QLibrary(CONFIG->m_strAppPath + "/dll/playVideo");
 	m_pPlayer = nullptr;
 	m_pEvenRoot = new Elastic(this);
 	m_nState = 2;
@@ -95,7 +95,7 @@ void QtMyRedCar::InitUi()
 		<< comboBox3 << comboBox4);
 	m_pUi->comboBox->setView(new QListView());
 	//order
-	on_order_clicked();
+	//on_order_clicked();
 	//延时初始化
 	QTimer::singleShot(10, this, [=]() {
 		InitSearch();
@@ -153,7 +153,7 @@ inline void QtMyRedCar::SetMaxButtonState(bool bIsOnMax)
 {
 	if (bIsOnMax)
 	{
-		m_nState |= Max_8bit & 1;
+		m_nState |= 1;
 	}
 	else
 	{
@@ -170,11 +170,11 @@ inline void QtMyRedCar::SetOrderState(bool bNormal)
 {
 	if (bNormal)
 	{
-		m_nState |= Max_8bit & 2;
+		m_nState |= 2;
 	}
 	else
 	{
-		m_nState &= Max_8bit & 2;
+		m_nState &= Max_8bit ^ 2;
 	}
 }
 
@@ -272,17 +272,19 @@ void QtMyRedCar::previewVideo(QString path)
 		{
 			if (!m_pDll->load())
 			{
+				QString op = m_pDll->errorString();
 				return;
 			}
 			m_pPlayer = ((VideoPalyer * (*)(QWidget*))
-				(m_pDll->resolve("getpvobj")))(m_pUi->videwid);
+				(m_pDll->resolve("GetpPlayVideo")))(m_pUi->videwid);
 		}
 		CONFIG->m_strVideo = path;
 		m_pPlayer->SetVideo(path);
 		m_pPlayer->SetVolume(0);
 		m_pPlayer->PlayVideo();
 	}
-	else {
+	else 
+	{
 		CONFIG->m_strVideo.clear();
 		delete m_pPlayer;
 		m_pPlayer = nullptr;
@@ -310,9 +312,10 @@ void QtMyRedCar::on_order_clicked()
 	}
 	else 
 	{
-		pixmap.load(CONFIG->m_strAppPath+sort_r);
+		pixmap.load(CONFIG->m_strAppPath + sort_r);
 		SetOrderState(true);
 	}
+
 	int w = m_pUi->order->geometry().width();
 	m_pUi->order->setIcon(QIcon(pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
 	emit ChangeUnitOrder(IsNormalOrder());

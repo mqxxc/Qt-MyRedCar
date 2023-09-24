@@ -110,7 +110,8 @@ void Tray::setVolumFish()
         vIcoState = true;
         ChangeScrIco();
     }
-    emit setVolumeToDesk(scr->value());
+    CONFIG->m_nLVolume = scr->value();
+    emit setVolumeToDesk();
 }
 
 void Tray::ChangeScrIco()
@@ -177,12 +178,11 @@ void Tray::menuExit()
     emit mainExit();
 }
 
-void Tray::setVolume(int volume)
+void Tray::setVolume()
 {
     show();
-    oldVolume = volume;
-    scr->setValue(volume);
-    ChangeScrIco();
+    oldVolume = CONFIG->m_nLVolume;
+    scr->setValue(oldVolume);
 }
 
 void Tray::setState()
@@ -206,18 +206,20 @@ bool Tray::eventFilter(QObject* object, QEvent* event)
         if (event->type() == QEvent::MouseButtonPress)
         {
             vIcoState = !vIcoState;
-            ChangeScrIco();
             if (vIcoState) 
             {
                 scr->setValue(oldVolume);
-                emit setVolumeToDesk(oldVolume);
+                CONFIG->m_nLVolume = oldVolume;
+                emit setVolumeToDesk();
             }
             else 
             {
                 oldVolume = scr->value();
                 scr->setValue(0);
-                emit setVolumeToDesk(0);
+                CONFIG->m_nLVolume = 0;
+                emit setVolumeToDesk();
             }
+            ChangeScrIco();
         return true;
         }
     }

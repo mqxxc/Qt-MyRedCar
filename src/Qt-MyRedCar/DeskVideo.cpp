@@ -31,8 +31,7 @@ DeskVideo::DeskVideo()
 	//初始化变量
 	m_pDeskWnd = new QWidget();
 	m_pPlayer = nullptr;
-	m_pPlayDll = new QLibrary("dll/playVideo");
-	m_nVolume = 100;
+	m_pPlayDll = new QLibrary(CONFIG->m_strAppPath + "/dll/playVideo");
 	
 	HWND hProgman = FindWindow(L"Progman", 0);				//找到PM窗口
 	SendMessageTimeout(hProgman, 0x52C, 0, 0, 0, 100, 0);	//给它发特殊消息
@@ -61,7 +60,9 @@ DeskVideo::DeskVideo()
 		}
 		else 
 		{
-			emit TrayShow(m_nVolume);	//直接播放上次视频并直接显示托盘
+			SetVolume();
+			ReplaceDesk();
+			emit TrayShow();		//直接播放上次视频并直接显示托盘
 		}
 	});
 }
@@ -101,10 +102,9 @@ bool DeskVideo::ReplaceDesk()
 	}
 }
 
-void DeskVideo::SetVolume(uchar volume) 
+void DeskVideo::SetVolume() 
 {
-	this->m_nVolume = volume;
-	m_pPlayer->SetVolume(volume);
+	m_pPlayer->SetVolume(CONFIG->m_nLVolume);
 }
 
 void DeskVideo::StopOrStart(int state) 

@@ -13,11 +13,9 @@ public:
 	DeskVideo();
 	~DeskVideo();
 	bool ReplaceDesk();						//替换桌面
-	void SetVolume(uchar volume);			//设置音量
 
 
 private:
-	int m_nVolume;			//音量
 	QWidget* m_pDeskWnd;	//视频层窗口
 	QLibrary* m_pPlayDll;	//dll库
 	VideoPalyer* m_pPlayer;	//播放器
@@ -25,10 +23,11 @@ private:
 
 signals:
 	void NoVideo();						//初始化时无视频播放信号
-	void TrayShow(float fVolume);		//托盘显示信号
+	void TrayShow();					//托盘显示信号
 	void LoadFinish();					//初始化完成完成信号
 
 
 public slots:
 	void StopOrStart(int Start);		//暂停或者开始播放
+	void SetVolume();					//设置音量
 };
