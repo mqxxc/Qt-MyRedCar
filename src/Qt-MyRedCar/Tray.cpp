@@ -15,15 +15,14 @@
 Tray::Tray()
 {
 	//初始化变量
-    ico  = new QSystemTrayIcon();
-    menu = new QMenu();
-    list = new QAction * [5];
+    m_pTrayIco  = new QSystemTrayIcon();
+    m_pMenu = new QMenu();
     volumScr = new QWidget;
     volumeico = new QLabel(volumScr);
     scr = new QSlider(volumScr);
-    vIcoState = true;
+    m_bVIcoState = true;
     loop = new QEventLoop(volumScr);
-    oldVolume = 100;
+    m_nOldVolume = 100;
     init();
     connects();
 }
@@ -32,49 +31,60 @@ Tray::~Tray()
 {
     delete loop;
     delete volumScr;
-    for (int i = 0; i < 5; ++i) 
+    for (QList<QAction*>::iterator it = m_listActions.begin(); it < m_listActions.end(); ++it)
     {
-       delete list[i];
+        delete (*it);
     }
-    delete list;
-    delete menu;
+    m_listActions.clear();
+    delete m_pMenu;
     hide();
-    delete ico;
+    delete m_pTrayIco;
 }
 
 void Tray::init()
 {
-    initmenu();
-    inittray();
+    InitMenus();
+    InitTray();
     initScr();
 }
 
-void Tray::inittray()
+void Tray::InitTray()
 {
-    ico->setIcon(QIcon(CONFIG->m_strAppPath + icoPath));                       //设定托盘图标
-    ico->setToolTip(TrayTitle);                         //提示文字
-    ico->setContextMenu(menu);
-    ico->hide();
+    m_pTrayIco->setIcon(QIcon(CONFIG->m_strAppPath + icoPath));  //设定托盘图标
+    m_pTrayIco->setToolTip(TrayTitle);                         //提示文字
+    m_pTrayIco->setContextMenu(m_pMenu);
+    m_pTrayIco->hide();
 }
 
-void Tray::initmenu()
+void Tray::InitMenus()
 {
-    list[0] = new QAction(menu1);
-    list[1] = new QAction(menu2);
-    list[1]->setData(1);
-    list[2] = new QAction(menu3_1);
-    list[2]->setData(1);
-    list[3] = new QAction(menu4);
-    list[4] = new QAction(menu5);
-    for (int i = 0; i < 5;++i) 
+    QAction* action = new QAction(menu1);
+    action->setObjectName("open");
+    m_mapMenuAction["open"] = &Tray::MenuOpen;
+    m_listActions.append(action);
+    action = new QAction(menu2);
+    action->setObjectName("volume");
+    m_mapMenuAction["volume"] = &Tray::MenuVolumeChange;
+    action->setData(1);
+    m_listActions.append(action);
+    action = new QAction(menu3_1);
+    action->setObjectName("video");
+    m_mapMenuAction["video"] = &Tray::MenuVideoStateChange;
+    action->setData(1);
+    m_listActions.append(action);
+    action = new QAction(menu4);
+    action->setObjectName("about");
+    m_mapMenuAction["about"] = &Tray::MenuAbout;
+    m_listActions.append(action);
+    action = new QAction(menu5);
+    action->setObjectName("exit");
+    m_mapMenuAction["exit"] = &Tray::MenuExit;
+    m_listActions.append(action);
+    for (QList<QAction*>::iterator it = m_listActions.begin(); it != m_listActions.end(); ++it)
     {
-        menu->addAction(list[i]);
+        m_pMenu->addAction((*it));
+        connect((*it), SIGNAL(triggered(bool)), this, SLOT(MenuAction(bool)));
     }
-    connect(list[0], SIGNAL(triggered(bool)), this, SLOT(menuOpen()));
-    connect(list[1], SIGNAL(triggered(bool)), this, SLOT(menuVolume()));
-    connect(list[2], SIGNAL(triggered(bool)), this, SLOT(menuState()));
-    connect(list[3], SIGNAL(triggered(bool)), this, SLOT(menuAbout()));
-    connect(list[4], SIGNAL(triggered(bool)), this, SLOT(menuExit()));
 }
 
 void Tray::initScr()
@@ -100,32 +110,29 @@ void Tray::initScr()
 void Tray::connects()
 {
     connect(scr, &QSlider::valueChanged,this,&Tray::setVolumFish);
-    connect(ico, &QSystemTrayIcon::activated, this, &Tray::eventHandler);
+    connect(m_pTrayIco, &QSystemTrayIcon::activated, this, &Tray::eventHandler);
 }
 
 void Tray::setVolumFish()
 {
-    if (scr->value() != 0)
-    {
-        vIcoState = true;
-        ChangeScrIco();
-    }
     CONFIG->m_nLVolume = scr->value();
-    emit setVolumeToDesk();
+    m_bVIcoState = CONFIG->m_nLVolume != 0;
+    ChangeScrIco();
+    emit DeskVolumeChange();
 }
 
 void Tray::ChangeScrIco()
 {
     QPixmap pixmap;
-    if (!vIcoState || oldVolume == 0) 
+    if (m_bVIcoState) 
     {
-        pixmap.load(CONFIG->m_strAppPath + muteIco);
-        vIcoState = false;
+        pixmap.load(CONFIG->m_strAppPath + volumeIco);
+        m_bVIcoState = true;
     }
     else 
     {
-        pixmap.load(CONFIG->m_strAppPath + volumeIco);
-        vIcoState = true;
+        pixmap.load(CONFIG->m_strAppPath + muteIco);
+        m_bVIcoState = false;
     }
     int w = volumeico->geometry().width();
     volumeico->setPixmap(pixmap.scaled(w, w, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -133,69 +140,77 @@ void Tray::ChangeScrIco()
 
 void Tray::show()
 {
-    ico->show();
+    m_pTrayIco->show();
 }
 
 void Tray::hide()
 {
-    ico->hide();
+    m_pTrayIco->hide();
 }
 
-void Tray::menuVolume() 
+void Tray::MenuVolumeChange(bool bCheckState)
 {
+    Q_UNUSED(bCheckState)
     ChangeScrIco();
     volumeico->installEventFilter(this);
     QTimer::singleShot(10, this, [=]() {
+        //延时弹出否则弹出后直接关闭
         volumScr->show();
         });
     loop->exec();
 }
 
-void Tray::menuState(){
-    if (list[2]->data() == 1) 
+void Tray::MenuVideoStateChange(bool bCheckState)
+{
+    Q_UNUSED(bCheckState)
+    QAction* temp = m_listActions.at(2);
+    if (temp->data() == 1)
     {
-        emit stateToDesk(0);//暂停播放
-        list[2]->setText(menu3_0);
-        list[2]->setData(0);
+        emit DeskStateChange(0);//暂停播放
+        temp->setText(menu3_0);
+        temp->setData(0);
     }  
     else 
     {
-        emit stateToDesk(1);//继续
-        list[2]->setText(menu3_1);
-        list[2]->setData(1);
+        emit DeskStateChange(1);//继续
+        temp->setText(menu3_1);
+        temp->setData(1);
     }
 }
 
-void Tray::menuAbout()
+void Tray::MenuAbout(bool bCheckState)
 {
+    Q_UNUSED(bCheckState)
     About about;
     about.exec();
 }
 
-void Tray::menuExit()
+void Tray::MenuExit(bool bCheckState)
 {
+    Q_UNUSED(bCheckState)
     hide();
-    emit mainExit();
+    emit MainAppExit();
 }
 
-void Tray::setVolume()
+void Tray::SetVolume()
 {
     show();
-    oldVolume = CONFIG->m_nLVolume;
-    scr->setValue(oldVolume);
+    m_bVIcoState = CONFIG->m_nLVolume != 0;
+    scr->setValue(CONFIG->m_nLVolume);
 }
 
-void Tray::setState()
+void Tray::SetState()
 {
-    list[2]->setText(menu3_1);
-    list[2]->setData(1);
+    QAction* temp = m_listActions.at(2);
+    temp->setText(menu3_1);
+    temp->setData(1);
 }
 
 void Tray::eventHandler(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::DoubleClick) 
     {
-        menuOpen();
+        MenuOpen(true);
     }
 }
 
@@ -205,19 +220,19 @@ bool Tray::eventFilter(QObject* object, QEvent* event)
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
-            vIcoState = !vIcoState;
-            if (vIcoState) 
+            m_bVIcoState = !m_bVIcoState;
+            if (m_bVIcoState) 
             {
-                scr->setValue(oldVolume);
-                CONFIG->m_nLVolume = oldVolume;
-                emit setVolumeToDesk();
+                scr->setValue(m_nOldVolume);
+                CONFIG->m_nLVolume = m_nOldVolume;
+                emit DeskVolumeChange();
             }
             else 
             {
-                oldVolume = scr->value();
+                m_nOldVolume = scr->value();
                 scr->setValue(0);
                 CONFIG->m_nLVolume = 0;
-                emit setVolumeToDesk();
+                emit DeskVolumeChange();
             }
             ChangeScrIco();
         return true;
@@ -234,8 +249,19 @@ bool Tray::eventFilter(QObject* object, QEvent* event)
     return QObject::eventFilter(object, event);
 }
 
-void Tray::menuOpen() 
+void Tray::MenuAction(bool bCheckState)
 {
-    emit ShowMW();
+    QMap<QString, void (Tray::*)(bool)>::iterator it = m_mapMenuAction.find(sender()->objectName());
+    if (it == m_mapMenuAction.end())
+    {
+        return;
+    }
+    (this->**it)(bCheckState);
+}
+
+void Tray::MenuOpen(bool bCheckState)
+{
+    Q_UNUSED(bCheckState)
+    emit ShowMainWnd();
     hide();
 }

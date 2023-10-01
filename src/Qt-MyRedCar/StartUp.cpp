@@ -56,12 +56,12 @@ void StartUp::awakenExe()
 
 void StartUp::connectForOther() 
 {
-	connect(m_pTray,  &Tray::setVolumeToDesk, m_pDesk, &DeskVideo::SetVolume);
-	connect(m_pTray,  &Tray::mainExit,        this, &StartUp::exitToApp);
-	connect(m_pTray,  &Tray::ShowMW,          this, &StartUp::mainAwaken);
+	connect(m_pTray,  &Tray::DeskVolumeChange, m_pDesk, &DeskVideo::SetVolume);
+	connect(m_pTray,  &Tray::MainAppExit,        this, &StartUp::exitToApp);
+	connect(m_pTray,  &Tray::ShowMainWnd,          this, &StartUp::mainAwaken);
 	connect(m_pDesk,  &DeskVideo::NoVideo,    this, &StartUp::mainWidNew);
-	connect(m_pDesk,  &DeskVideo::TrayShow,   m_pTray, &Tray::setVolume);
-	connect(m_pTray,  &Tray::stateToDesk,     m_pDesk, &DeskVideo::StopOrStart);
+	connect(m_pDesk,  &DeskVideo::TrayShow,   m_pTray, &Tray::SetVolume);
+	connect(m_pTray,  &Tray::DeskStateChange,     m_pDesk, &DeskVideo::StopOrStart);
 	connect(m_pDesk,  &DeskVideo::LoadFinish, this, &StartUp::loadFinish);
 	connect(m_pSrever,&Server::Awaken,        this, &StartUp::awakenExe);
 }
@@ -105,7 +105,7 @@ void StartUp::connectForMW()
 	connect(m_pMainWnd, &QtMyRedCar::MainAppExit,		this, &StartUp::exitToApp);
 	connect(m_pMainWnd, &QtMyRedCar::WndToClear,		this, &StartUp::mainWidDelete);
 	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pDesk, &DeskVideo::ReplaceDesk);
-	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pTray, &Tray::setState);
+	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pTray, &Tray::SetState);
 	connect(m_pMainWnd, &QtMyRedCar::LoadFinishSig,    this, &StartUp::mainWidShow);
 }
 
