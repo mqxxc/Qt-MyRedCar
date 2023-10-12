@@ -1,11 +1,11 @@
-﻿#include "Loading.h"
-#include <QGraphicsScene>
+﻿#include <QGraphicsScene>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QGraphicsRotation>
 #include <QTimer>
 #include <QSplashScreen>
 #include <QCoreApplication>
+#include "Loading.h"
 #pragma execution_character_set("utf-8")
 
 //Item

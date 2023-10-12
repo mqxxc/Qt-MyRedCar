@@ -2,6 +2,6 @@
 <config>
     <play>
         <volume value="0"/>
-        <playing path="F:/C++/Qt-MyRedCar/make/x64/Debug/res/media/Anime Bride/1.mp4"/>
+        <playing path=""/>
     </play>
 </config>

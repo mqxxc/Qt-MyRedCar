@@ -1,4 +1,4 @@
-﻿#include <qcoreapplication.h>
+﻿#include <Qcoreapplication>
 #include <QScreen>
 #include <QGuiApplication>
 #include <qdom.h>

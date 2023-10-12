@@ -35,16 +35,15 @@ RcWidget::~RcWidget()
 
 void RcWidget::SetScaling(float fScaling)
 {
-	Unit::setScaling(fScaling);
+	Unit::SetScaling(fScaling);
 }
 
 void RcWidget::InitMember()
 {
 	m_pRcs = new UnitMsgs;
-	SetRefreshbit(false);
+	m_nControlSig = 0;
 	SetOrder(true);
 	m_sortCriteria = SortCriteria::onoe;
-	m_nControlSig = 2;
 }
 
 void RcWidget::CreateUnit(int i)
@@ -53,7 +52,7 @@ void RcWidget::CreateUnit(int i)
 	for (; i < m_pRcs->Count();++i) 
 	{
 		m_arrUnits.insert(i, new Unit(i, this));
-		connect(m_arrUnits[i], &Unit::UpdateUnits,  this, &RcWidget::Release);
+		connect(m_arrUnits[i], &Unit::UpdateUnits,  this, &RcWidget::SelectUnit);
 		connect(m_arrUnits[i], &Unit::RenameSig, this, &RcWidget::fileRename);
 		m_listIDList.append(i);
 	}
@@ -62,8 +61,8 @@ void RcWidget::CreateUnit(int i)
 void RcWidget::InitUnitSize() 
 {
 //计算图片单元的大小
-	m_UnitMsg.m_nUnitW = Unit::GetWnd_W();					//单元的宽
-	m_UnitMsg.m_nSpaceW = Unit::GetWnd_W() / ratio;			//间隙宽
+	m_UnitMsg.m_nUnitW = Unit::GetWnd_Width();					//单元的宽
+	m_UnitMsg.m_nSpaceW = Unit::GetWnd_Width() / ratio;			//间隙宽
 	int divisor = m_UnitMsg.m_nUnitW + m_UnitMsg.m_nSpaceW;		//二者宽的和
 	m_UnitMsg.m_nRowN = (m_nWndW - m_UnitMsg.m_nSpaceW) / divisor;	//一行能存放的个数
 	m_UnitMsg.m_nOffset= m_nWndW % divisor / 2;					//两边的偏移量
@@ -86,21 +85,18 @@ void RcWidget::RefreshUnit()
 			ShowUnit(*it);
 		}
 	}
-
-	if (!IsRefresh())
-	{//仅在第一次初始化是发射信号
-		emit IniFinish();
-	}
 }
 
-void RcWidget::ShowUnit(int sum) 
+void RcWidget::ShowUnit(int sum)
 {
-	if (m_pRcs->GetData(sum)->IsShow())
+	UnitMsg* op = m_pRcs->GetData(sum);
+	if (!m_pRcs->GetData(sum)->IsShow())
 	{
-		m_arrUnits[sum]->move(m_nLastUnitX, m_nLastUnitY);
-		m_arrUnits[sum]->show();
-		ReckonNext();
+		return;
 	}
+	m_arrUnits[sum]->move(m_nLastUnitX, m_nLastUnitY);
+	m_arrUnits[sum]->show();
+	ReckonNext();
 }
 
 void RcWidget::Refresh()
@@ -111,14 +107,17 @@ void RcWidget::Refresh()
 
 void RcWidget::SearchUnits(QString name)
 {
-	m_pRcs->ReFresh(true);
 	for (int i = 0; i < m_pRcs->Count(); ++i) 
 	{
 		QString rcName =m_pRcs->GetData(m_listIDList[i])->GetName();
 		m_arrUnits[m_listIDList[i]]->hide();
-		if (rcName.contains(name)) 
+		if (rcName.indexOf(name) != -1)
 		{
 			m_pRcs->GetData(m_listIDList[i])->SetVisual(true);
+		}
+		else
+		{
+			m_pRcs->GetData(m_listIDList[i])->SetVisual(false);
 		}
 	}
 	RefreshUnit();
@@ -180,10 +179,14 @@ void RcWidget::ChangeCondition(SortCriteria condition)
 
 void RcWidget::IniUnits()
 {
+	if (!m_arrUnits.empty())
+	{
+		return;
+	}
 	m_pRcs->ReadUnitMsgs();
 	CreateUnit(0);
 	RefreshUnit();
-	SetRefreshbit(true);
+	emit IniFinish();
 }
 
 void RcWidget::ChangeOrder(bool state)
@@ -203,27 +206,11 @@ void RcWidget::AddUnit()
 
 void RcWidget::ReckonNext(){
 	m_nLastUnitX += m_UnitMsg.m_nUnitW + m_UnitMsg.m_nSpaceW;
-	if (m_nLastUnitX+ m_UnitMsg.m_nUnitW > m_nWndW) {
+	if (m_nLastUnitX+ m_UnitMsg.m_nUnitW > m_nWndW)
+	{
 		m_nLastUnitY += m_UnitMsg.m_nUnitW + m_UnitMsg.m_nSpaceW;
 		m_nLastUnitX = m_UnitMsg.m_nOffset;
 	}
-}
-
-inline void RcWidget::SetRefreshbit(bool bRefresh)
-{
-	if (bRefresh)
-	{
-		m_nControlSig |= 1;
-	}
-	else
-	{
-		m_nControlSig &= maxControlSig ^ 1;
-	}
-}
-
-inline bool RcWidget::IsRefresh()
-{
-	return m_nControlSig & 1;
 }
 
 inline bool RcWidget::IsNormal()
@@ -288,15 +275,23 @@ void RcWidget::resizeEvent(QResizeEvent* e)
 
 void RcWidget::mousePressEvent(QMouseEvent* event)
 {
+	int nCurrentID = Unit::CurrentID();
 	Unit::ReleaseAll();
-	emit SelectUnit("");
+	SelectUnit(nCurrentID);
+	emit SelectUnitSig("");
 }
 
-void RcWidget::Release(int id)
+void RcWidget::SelectUnit(int nOldID)
 {
-	if (id != -1)
+	if (nOldID != -1)
 	{
-		emit SelectUnit(m_pRcs->GetData(id)->GetVideoPath());
+		m_arrUnits.at(nOldID)->OnRelease();
+	}
+
+	int nCurrentID = Unit::CurrentID();
+	if (nCurrentID != -1)
+	{
+		emit SelectUnitSig(m_pRcs->GetData(nCurrentID)->GetVideoPath());
 	}
 }
 

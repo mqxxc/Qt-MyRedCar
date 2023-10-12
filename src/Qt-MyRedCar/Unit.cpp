@@ -64,6 +64,7 @@ void Unit::InitUi()
     m_pUi->text->setTextColor(QColor(255, 255, 255));                   //白色背景
     m_pUi->text->setContextMenuPolicy(Qt::NoContextMenu);               //取消右键菜单
     m_pUi->text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);    //无滑块
+    m_pUi->text->document()->setMaximumBlockCount(10);
 
 //设置重命名界面
     m_pUi->input->hide();                                               //初始状态为隐藏
@@ -76,6 +77,8 @@ void Unit::InitUi()
     QPixmap pixmapPicFit = pixmapPic.scaled(this->width(), this->width(),
         Qt::IgnoreAspectRatio);
     m_pUi->ico->setPixmap(pixmapPicFit);
+
+    OnRelease();
 
 //其他默认操作
     OnRelease();                                //默认不选中
@@ -104,29 +107,27 @@ Unit::~Unit()
     delete m_pUi;
 }
 
-void Unit::setScaling(float appScaling)
+void Unit::SetScaling(float appScaling)
 {
     m_nWndW = initw / appScaling;
 }
 
-int Unit::GetWnd_W()
+int Unit::GetWnd_Width()
 {
     return m_nWndW;
 }
 
 void Unit::OnSelect()
 {
-    m_pUi->ico->setStyleSheet("border:4px solid rgb(0, 255, 255);"
-        " border-radius:25px;");
+    m_pUi->ico->setStyleSheet("border:2px solid rgb(0, 255, 255);");
 }
 
 void Unit::OnRelease()
 {
-    m_pUi->ico->setStyleSheet("border:2px solid rgb(240, 242, 245);"
-        " border-radius:25px; ");
+    m_pUi->ico->setStyleSheet("border:2px solid rgb(255, 255, 255);");
 }
 
-ushort Unit::CurrentID()
+int Unit::CurrentID()
 {
     return m_nSelectID;
 }
@@ -138,6 +139,7 @@ void Unit::SetDatas(UnitMsgs* handle)
 
 void Unit::ReleaseAll()
 {
+    m_nSelectID = -1;
 }
 
 void Unit::RenameFinish()
@@ -161,7 +163,7 @@ void Unit::UpdateUnitPath(QString name)
     m_pDataHandle->GetData(m_nID)->SetName(name);
 }
 
-void Unit::mousePressEvent(QMouseEvent* ev)
+void Unit::mouseReleaseEvent(QMouseEvent* ev)
 {
     if (ev->button() == Qt::RightButton) 
     {
@@ -198,7 +200,7 @@ bool Unit::eventFilter(QObject* object, QEvent* event)
         RenameFinish();
         return true;
     }
-    return QObject::eventFilter(object, event);
+    return false;
 }
 
 void Unit::MenuRename(bool b)
@@ -239,5 +241,5 @@ void Unit::MenuDelete(bool b)
 }
 
 ushort Unit::m_nWndW = 120;
-ushort Unit::m_nSelectID = 0;
+int Unit::m_nSelectID = -1;
 UnitMsgs* Unit::m_pDataHandle = nullptr;

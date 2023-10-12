@@ -52,9 +52,10 @@ signals:
     void search(QString name);                          //搜索信号
     //bottom
     void MainAppExit();                                 //主程序退出
-    void upDesk();                                      //更换壁纸
+    void UpDesk();                                      //更换壁纸
     //other
     void LoadFinishSig();                               //主窗口加载完成信号
+
 
 private slots:
     //title

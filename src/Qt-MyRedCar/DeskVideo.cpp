@@ -85,13 +85,11 @@ bool DeskVideo::ReplaceDesk()
 	}
 	else 
 	{
+		QString strPath = CONFIG->m_strVideo;
 		QFile video(CONFIG->m_strVideo);
 		if (!video.exists()) 
 		{
-			QWidget wid;
-			wid.setWindowIcon(QIcon(icoPath));
-			wid.hide();
-			QMessageBox::warning(&wid, msgBoxTitle, fileNoFind);
+			QMessageBox::warning(nullptr, msgBoxTitle, fileNoFind);
 			return false;
 		}
 		m_pPlayer->SetVideo(CONFIG->m_strVideo);

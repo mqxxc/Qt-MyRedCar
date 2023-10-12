@@ -25,7 +25,7 @@ public:
 	bool MoveFile(QString path);					//DXG改为拷贝视频文件而非移动
 	void Refresh();									//刷新资源单元为全显示
 	void ChangeCondition(SortCriteria condition);	//修改单元排序的条件
-	void IniUnits();
+	void IniUnits();								//初始化所有单元
 
 
 private:
@@ -49,7 +49,7 @@ private:
 	uchar m_nControlSig;				//控制信号
 	/*    
 	*从右边,第一位管理是否刷新，第二为判断正序或者倒序
-	*1.	为1则刷新单元
+	*1.	
 	*2.	为1则正序，为0则倒序
 	*/
 
@@ -62,19 +62,17 @@ private:
 	void ShowUnit(int sum);				//辅助放置单元
 	void AddUnit();						//添加unit单元
 	void ReckonNext();					//计算下一个单元的位置
-	inline void SetRefreshbit(bool bRefresh);	//设置刷新位
-	inline bool IsRefresh();					//是否刷新
 	inline bool IsNormal();						//是正序
 	inline void SetOrder(bool bNormal);			//设置正逆序
 	
 
 signals:
-	void SelectUnit(QString path);				//选中单元信息
+	void SelectUnitSig(QString path);				//选中单元信息
 	void IniFinish();							//初始化完成
 
 
 public slots:
-	void Release(int id);						//选中单元取消选择其他单元
+	void SelectUnit(int nOldId);					//选中单元取消选择其他单元
 	void fileRename(int id,QString name);		//文件重命名
 	void SearchUnits(QString name);				//筛选单元
 	void ChangeOrder(bool state);				//改变单元的顺序

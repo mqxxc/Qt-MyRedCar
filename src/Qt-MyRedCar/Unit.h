@@ -14,11 +14,12 @@ class Unit:public QWidget
 public:
 	Unit(int id, QWidget* parent = Q_NULLPTR);
 	~Unit();
-	static void setScaling(float scaling);		//设置窗口缩放比例
-	static int GetWnd_W();						//获取窗口大小
-	static ushort CurrentID();					//获取当前选中的单元id号
+	static void SetScaling(float scaling);		//设置窗口缩放比例
+	static int GetWnd_Width();					//获取窗口大小
+	static int CurrentID();						//获取当前选中的单元id号
 	static void SetDatas(UnitMsgs* handle);		//设置数据源
-	static void ReleaseAll();					//取消选择所有控件
+	static void ReleaseAll();					//取消选择全部
+	void OnRelease();							//取消选中
 
 
 private:
@@ -28,7 +29,7 @@ private:
 	QEventLoop* input_loop;						//重命名文本输入框的事件循环
 	int m_nID;									//资源信息ID
 	static ushort m_nWndW;						//窗口宽
-	static ushort m_nSelectID;					//被选中的单元的id
+	static int m_nSelectID;						//被选中的单元的id
 	static UnitMsgs* m_pDataHandle;				//数据源
 
 	void InitUi();								//初始化ui界面
@@ -38,7 +39,6 @@ private:
 	void OnSelect();							//被选中
 	void RenameFinish();						//重命名菜单操作完成
 	void UpdateUnitPath(QString name);			//修改单元名字以及图片路径
-	void OnRelease();							//取消选中
 
 
 signals:
@@ -48,7 +48,7 @@ signals:
 
 
 private slots:
-	void mousePressEvent(QMouseEvent* ev);				//鼠标按键消息
+	void mouseReleaseEvent(QMouseEvent* ev);
 	bool eventFilter(QObject* object, QEvent* event);   //子控件事件监听器
 	//右键菜单处理
 	/*dxg以后用windows钩子解决重命名输入框问题*/

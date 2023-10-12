@@ -104,8 +104,8 @@ void StartUp::connectForMW()
 {
 	connect(m_pMainWnd, &QtMyRedCar::MainAppExit,		this, &StartUp::exitToApp);
 	connect(m_pMainWnd, &QtMyRedCar::WndToClear,		this, &StartUp::mainWidDelete);
-	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pDesk, &DeskVideo::ReplaceDesk);
-	connect(m_pMainWnd, &QtMyRedCar::upDesk,			m_pTray, &Tray::SetState);
+	connect(m_pMainWnd, &QtMyRedCar::UpDesk,			m_pDesk, &DeskVideo::ReplaceDesk);
+	connect(m_pMainWnd, &QtMyRedCar::UpDesk,			m_pTray, &Tray::SetState);
 	connect(m_pMainWnd, &QtMyRedCar::LoadFinishSig,    this, &StartUp::mainWidShow);
 }
 

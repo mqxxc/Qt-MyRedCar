@@ -105,7 +105,7 @@ void QtMyRedCar::InitUi()
 
 void QtMyRedCar::Connects() 
 {
-	connect(m_pUi->RcWid, &RcWidget::SelectUnit, this, &QtMyRedCar::previewVideo);
+	connect(m_pUi->RcWid, &RcWidget::SelectUnitSig, this, &QtMyRedCar::previewVideo);
 	connect(m_pUi->RcWid, &RcWidget::IniFinish, this, &QtMyRedCar::LoadFinish);
 	connect(this,      &QtMyRedCar::search, m_pUi->RcWid, &RcWidget::SearchUnits);
 	connect(this,      &QtMyRedCar::ChangeUnitOrder, m_pUi->RcWid, &RcWidget::ChangeOrder);
@@ -251,12 +251,13 @@ void QtMyRedCar::on_Refresh_clicked()
 
 void QtMyRedCar::on_deletebo_clicked() 
 {
-	emit upDesk();
+	CONFIG->m_strVideo.clear();
+	emit UpDesk();
 }
 
 void QtMyRedCar::on_OK_clicked() 
 {
-	emit upDesk();
+	emit UpDesk();
 }
 
 void QtMyRedCar::on_endbo_clicked() 

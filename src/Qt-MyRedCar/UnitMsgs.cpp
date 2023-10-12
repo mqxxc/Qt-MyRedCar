@@ -60,7 +60,7 @@ int UnitMsgs::Count()
 
 void UnitMsgs::ReFresh(bool state)
 {
-	for (QVector<UnitMsg*>::const_iterator ti = m_arrDatas.cbegin() + 1; ti != m_arrDatas.cend(); ++ti)
+	for (QVector<UnitMsg*>::const_iterator ti = m_arrDatas.begin(); ti != m_arrDatas.end(); ++ti)
 	{
 		(*ti)->SetVisual(state);
 	}
