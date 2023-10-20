@@ -77,6 +77,6 @@ private slots:
     void on_deletebo_clicked();                         //移除壁纸
     void on_OK_clicked();                               //更换壁纸
     void on_endbo_clicked();                            //退出程序
-    void previewVideo(QString path);                    //预览窗口播放视频
+    void PreviewVideo();                                //预览窗口播放视频
     bool eventFilter(QObject* obj, QEvent* even);       //事件过滤器
 };

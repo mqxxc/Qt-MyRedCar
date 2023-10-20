@@ -32,13 +32,15 @@ QtMyRedCar::~QtMyRedCar()
 	delete m_pEvenRoot;
 	if (m_pPlayer == nullptr)
 	{
-		delete m_pPlayer;
+		m_pPlayer->ReleasePlayVideo();
+		m_pPlayer = nullptr;
 	}
 	if (m_pDll->isLoaded())
 	{
 		m_pDll->unload();
 	}
 	delete m_pDll;
+	m_pDll = nullptr;
 	delete m_pUi;
 	this->disconnect();
 }
@@ -88,8 +90,6 @@ void QtMyRedCar::InitUi()
 	m_pUi->label->setFont(QFont("Timers", 10, QFont::Bold));
 	//过滤按钮
 	m_pUi->filter->setLayoutDirection(Qt::RightToLeft);
-	//Rcwid
-	m_pUi->RcWid->SetScaling(CONFIG->m_fScale);
 	//comboBox
 	m_pUi->comboBox->addItems(QStringList() << comboBox1 << comboBox2
 		<< comboBox3 << comboBox4);
@@ -105,7 +105,7 @@ void QtMyRedCar::InitUi()
 
 void QtMyRedCar::Connects() 
 {
-	connect(m_pUi->RcWid, &RcWidget::SelectUnitSig, this, &QtMyRedCar::previewVideo);
+	connect(m_pUi->RcWid, &RcWidget::SelectUnitSig, this, &QtMyRedCar::PreviewVideo);
 	connect(m_pUi->RcWid, &RcWidget::IniFinish, this, &QtMyRedCar::LoadFinish);
 	connect(this,      &QtMyRedCar::search, m_pUi->RcWid, &RcWidget::SearchUnits);
 	connect(this,      &QtMyRedCar::ChangeUnitOrder, m_pUi->RcWid, &RcWidget::ChangeOrder);
@@ -227,10 +227,9 @@ void QtMyRedCar::on_lod_clicked()
 	//判断是否点击确定键
 	if (fileDialog.exec() != QFileDialog::Rejected) 
 	{
-
 		QStringList fileNames = fileDialog.selectedFiles();
 		QString path = fileNames.join("");
-		if (m_pUi->RcWid->MoveFile(path)) 
+		if (m_pUi->RcWid->AddUnit(path)) 
 		{
 			QMessageBox::about(this, MsgTitle, loadFinish_Text);
 		}
@@ -251,7 +250,7 @@ void QtMyRedCar::on_Refresh_clicked()
 
 void QtMyRedCar::on_deletebo_clicked() 
 {
-	CONFIG->m_strVideo.clear();
+	CONFIG->m_strVideoPath.clear();
 	emit UpDesk();
 }
 
@@ -265,28 +264,25 @@ void QtMyRedCar::on_endbo_clicked()
 	emit MainAppExit();
 }
 
-void QtMyRedCar::previewVideo(QString path) 
+void QtMyRedCar::PreviewVideo() 
 {
-	if (!path.isEmpty()) 
+	if (!CONFIG->m_strVideoPath.isEmpty()) 
 	{
 		if (m_pPlayer == nullptr) 
 		{
 			if (!m_pDll->load())
 			{
-				QString op = m_pDll->errorString();
 				return;
 			}
 			m_pPlayer = ((VideoPalyer * (*)(QWidget*))
 				(m_pDll->resolve("GetpPlayVideo")))(m_pUi->videwid);
 		}
-		CONFIG->m_strVideo = path;
-		m_pPlayer->SetVideo(path);
+		m_pPlayer->SetVideo(CONFIG->m_strVideoPath);
 		m_pPlayer->SetVolume(0);
 		m_pPlayer->PlayVideo();
 	}
 	else 
 	{
-		CONFIG->m_strVideo.clear();
 		delete m_pPlayer;
 		m_pPlayer = nullptr;
 		m_pDll->unload();

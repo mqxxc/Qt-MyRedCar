@@ -11,9 +11,10 @@ public:
 	QString m_strAppPath;			//程序运行路径结尾无“/”或者“\”
 	double m_fScale;				//程序窗口自适应大小缩放比例
 	uchar m_nLVolume;				//视频音量
-	QString m_strVideo;				//播放的视频路径
+	QString m_strVideoPath;			//播放的视频路径
+
 	~Config();
-	static Config* GetInstance();		
+	static Config* GetInstance();	//获取唯一实例
 	QPoint GetWorkDesktopPoint_RB();//获取工作桌面右下角的坐标
 	QString GetAppName();			//获取应用程序名字
 

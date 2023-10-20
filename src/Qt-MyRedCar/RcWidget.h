@@ -21,11 +21,12 @@ public:
 
 	RcWidget(QWidget* parent = Q_NULLPTR);
 	~RcWidget();
-	void SetScaling(float fScaling);				//设置缩放比例
-	bool MoveFile(QString path);					//DXG改为拷贝视频文件而非移动
-	void Refresh();									//刷新资源单元为全显示
-	void ChangeCondition(SortCriteria condition);	//修改单元排序的条件
-	void IniUnits();								//初始化所有单元
+	bool AddUnit(QString path);					//DXG改为拷贝视频文件而非移动
+	void Refresh();								//刷新资源单元为全显示
+	void ChangeCondition(SortCriteria condition);//修改单元排序的条件
+	void IniUnits();							//初始化所有单元
+	void SearchUnits(QString name);				//筛选单元
+	void ChangeOrder(bool state);				//改变单元的顺序
 
 
 private:
@@ -54,31 +55,24 @@ private:
 	*/
 
 	//子控件相关操作
-	void InitMember();					//初始化成员变量
-	void InitUnitSize();				//初始化图像单元大小
-	void CreateUnit(int i);				//从第i个元素信息创建UnitWnd
+	inline void InitMember();			//初始化成员变量
+	void ReUnitSize();					//重新设置图像单元大小
+	void CreateUnit();					//根据最后创建UnitWnd
 	void RefreshUnit();					//刷新所有单元
 	//其他辅助函数
 	void ShowUnit(int sum);				//辅助放置单元
-	void AddUnit();						//添加unit单元
 	void ReckonNext();					//计算下一个单元的位置
-	inline bool IsNormal();						//是正序
-	inline void SetOrder(bool bNormal);			//设置正逆序
+	inline bool IsNormal();				//是正序
+	inline void SetOrder(bool bNormal);	//设置排列顺序
+	void resizeEvent(QResizeEvent* e);			//大小改变事件
+	void mousePressEvent(QMouseEvent* event);	//鼠标点击事件
 	
 
 signals:
-	void SelectUnitSig(QString path);				//选中单元信息
-	void IniFinish();							//初始化完成
-
-
-public slots:
-	void SelectUnit(int nOldId);					//选中单元取消选择其他单元
-	void fileRename(int id,QString name);		//文件重命名
-	void SearchUnits(QString name);				//筛选单元
-	void ChangeOrder(bool state);				//改变单元的顺序
+	void SelectUnitSig();				//选中单元信息
+	void IniFinish();					//初始化完成
 
 
 private slots:
-	void resizeEvent(QResizeEvent* e);			//大小改变事件
-	void mousePressEvent(QMouseEvent* event);	//鼠标点击事件
+	void SelectUnit(int nCurrentID);	//选中单元取消选择其他单元
 };

@@ -34,7 +34,7 @@
 
 //Uint
 #ifdef Unit_H
-#define initw 120						//开发机推荐单元宽	
+#define UnitWidth 120						//开发机推荐单元宽	
 #define menuRN "重命名 "				//菜单项文本
 #define menuNL "取消喜欢 "				//菜单项文本
 #define menuIL "设为喜欢 "				//菜单项文本

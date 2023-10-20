@@ -1,11 +1,14 @@
 ﻿#include <QMouseEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <QTimer>
 #define Unit_H
 #include "macro.h"	
 #include "Config.h"
 #include "ui_unit.h"
 #include "Unit.h"
 #include "UnitMsgs.h"
+#include "Tools.h"
 #pragma execution_character_set("utf-8")	
 
 Unit::Unit(int id, QWidget* parent) : QWidget(parent)
@@ -13,113 +16,81 @@ Unit::Unit(int id, QWidget* parent) : QWidget(parent)
     //初始化基本变量
     m_pUi = new Ui::Unit;
     m_pUi->setupUi(this);
-    this->m_nID = id;
+    m_nID = id;
     
     //其他初始化
-    InitMember();                       //初始化其他变量
-    SetWndW();                          //初始化窗口大小
     InitUi();                           //初始化界面属性
-    InitRMenu();                        //初始化右键菜单
-}
-
-void Unit::SetWndW()
-{
-    resize(m_nWndW, m_nWndW);
-    m_pUi->ico->resize(m_nWndW, m_nWndW);
-    int texth = m_nWndW / 4 * 3;
-    m_pUi->text->setGeometry(0, texth, m_nWndW, m_nWndW-texth);
-    m_pUi->input->setGeometry(0, texth, m_nWndW, m_nWndW - texth);
 }
 
 void Unit::InitRMenu()
 {
-    //菜单列表
-    m_arrMenu[0]=new QAction(menuRN, this);
-    if (m_pDataHandle->GetData(m_nID)->IsLove()) 
+    if (sm_pDataHandle->GetData(m_nID)->IsLove())
     {
-        m_arrMenu[1] = new QAction(menuNL, this);
-        m_arrMenu[1]->setData(1);
+        sm_arrRMenuItems[1]->setText(menuNL);
+        sm_arrRMenuItems[1]->setData(1);
     }
     else
     {
-        m_arrMenu[1] = new QAction(menuIL, this);
-        m_arrMenu[1]->setData(0);
+        sm_arrRMenuItems[1]->setText(menuIL);
+        sm_arrRMenuItems[1]->setData(0);
     }
-    m_arrMenu[2]=new QAction(menuDe, this);
-    for (auto it : m_arrMenu)
-    {
-        m_pMenu_R->addAction(it);
-    }
-    connect(m_arrMenu[0], SIGNAL(triggered(bool)), this, SLOT(MenuRename(bool)));
-    connect(m_arrMenu[1], SIGNAL(triggered(bool)), this, SLOT(MenuSetLove(bool)));
-    connect(m_arrMenu[2], SIGNAL(triggered(bool)), this, SLOT(menuDelete(bool)));
+    connect(sm_RMenu, &QMenu::triggered, this, &Unit::MenuEven);
+    connect(sm_RMenu, &QMenu::aboutToHide, this, &Unit::MenuHide);
 }
 
-void Unit::InitUi() 
+inline void Unit::InitUi() 
 {
-//初始化窗体
-    this->setWindowFlags(Qt::FramelessWindowHint);      //设置为无边框窗口
+    resize(sm_nWndW, sm_nWndW);
+    m_pUi->ico->resize(sm_nWndW, sm_nWndW);
+    int texth = sm_nWndW / 4 * 3;
+    m_pUi->text->setGeometry(0, texth, sm_nWndW, sm_nWndW - texth);
+    setWindowFlags(Qt::FramelessWindowHint);      //设置为无边框窗口
 
 //初始化文本框界面
     m_pUi->text->setTextColor(QColor(255, 255, 255));                   //白色背景
     m_pUi->text->setContextMenuPolicy(Qt::NoContextMenu);               //取消右键菜单
     m_pUi->text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);    //无滑块
-    m_pUi->text->document()->setMaximumBlockCount(10);
+    m_pUi->text->document()->setMaximumBlockCount(1);
+    m_pUi->text->setLineWrapMode(QTextBrowser::NoWrap);
 
-//设置重命名界面
-    m_pUi->input->hide();                                               //初始状态为隐藏
-    m_pUi->input->setContextMenuPolicy(Qt::NoContextMenu);              //输入框无右键菜单
-    m_pUi->input->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);  //输入框窗口标记
+////设置重命名界面
+//    m_pUi->input->hide();                                               //初始状态为隐藏
+//    m_pUi->input->setContextMenuPolicy(Qt::NoContextMenu);              //输入框无右键菜单
+//    m_pUi->input->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);  //输入框窗口标记
 
 //设置文本图标
-    m_pUi->text->setText(m_pDataHandle->GetData(m_nID)->GetName());
-    QPixmap pixmapPic(m_pDataHandle->GetData(m_nID)->GetPhotoPath());
-    QPixmap pixmapPicFit = pixmapPic.scaled(this->width(), this->width(),
-        Qt::IgnoreAspectRatio);
-    m_pUi->ico->setPixmap(pixmapPicFit);
-
-    OnRelease();
-
+    if (sm_pDataHandle != nullptr)
+    {
+        m_pUi->text->setText(sm_pDataHandle->GetData(m_nID)->GetName());
+        m_pUi->ico->setPixmap(QPixmap(sm_pDataHandle->GetData(m_nID)->GetPhotoPath()).scaled(width(), width(),
+            Qt::IgnoreAspectRatio));
+    }
+   
 //其他默认操作
     OnRelease();                                //默认不选中
 }
 
-void Unit::InitMember()
-{
-    m_pMenu_R = new QMenu(this);
-    m_arrMenu = QVector<QAction*>(3);
-    input_loop = new QEventLoop(m_pUi->input);
-}
-
 Unit::~Unit()
 {
-    for (int i = 0; i < m_arrMenu.size(); ++i)
-    {
-        delete m_arrMenu[i];
-    }
-    delete m_pMenu_R;
-
-    if (input_loop != nullptr)
-    {
-        delete input_loop;
-    }
-    this->disconnect();
+    disconnect();
     delete m_pUi;
-}
 
-void Unit::SetScaling(float appScaling)
-{
-    m_nWndW = initw / appScaling;
 }
 
 int Unit::GetWnd_Width()
 {
-    return m_nWndW;
+    return sm_nWndW;
 }
 
 void Unit::OnSelect()
 {
+    if (sm_pSelectUnit != nullptr)
+    {
+        sm_pSelectUnit->OnRelease();
+    }
+    sm_pSelectUnit = this;
     m_pUi->ico->setStyleSheet("border:2px solid rgb(0, 255, 255);");
+    emit SelectUnits(m_nID);
 }
 
 void Unit::OnRelease()
@@ -127,55 +98,64 @@ void Unit::OnRelease()
     m_pUi->ico->setStyleSheet("border:2px solid rgb(255, 255, 255);");
 }
 
-int Unit::CurrentID()
+Unit* Unit::SelectUnit()
 {
-    return m_nSelectID;
+    return sm_pSelectUnit;
 }
 
 void Unit::SetDatas(UnitMsgs* handle)
 {
-    m_pDataHandle = handle;
+    if (sm_pDataHandle != nullptr)
+    {
+        delete sm_pDataHandle;
+    }
+
+    sm_pDataHandle = handle;
 }
 
-void Unit::ReleaseAll()
+void Unit::DeselectAll()
 {
-    m_nSelectID = -1;
+    if (sm_pSelectUnit == nullptr)
+    {
+        return;
+    }
+    sm_pSelectUnit->OnRelease();
+    sm_pSelectUnit = nullptr;
 }
 
 void Unit::RenameFinish()
 {
-    input_loop->exit();
-    QString name = m_pUi->input->toPlainText();
+    QString name = sm_editor->toPlainText();
     if (!name.isEmpty()) {
-        if (name.compare(m_pDataHandle->GetData(m_nID)->GetName())!=0)
-        {
-            m_pUi->text->setText(name);
-            emit RenameSig(m_nID, name);
-            UpdateUnitPath(name);
+        if (name.compare(sm_pDataHandle->GetData(m_nID)->GetName())!=0)
+        {//与原来的名字不一样
+            if (sm_pDataHandle->GetData(m_nID)->SetName(name))
+            {
+                m_pUi->text->setText(name);
+            }
+            else
+            {
+                QMessageBox::warning(this, "提示", "重命名失败！");
+            }
         }
     }
-    m_pUi->input->hide();
-    m_pUi->input->removeEventFilter(this);
-}
-
-void Unit::UpdateUnitPath(QString name)
-{
-    m_pDataHandle->GetData(m_nID)->SetName(name);
+    sm_editorLoop.exit();
+    sm_editor->setParent(this);
+    sm_editor->hide();
+    sm_editor->removeEventFilter(this);
 }
 
 void Unit::mouseReleaseEvent(QMouseEvent* ev)
 {
     if (ev->button() == Qt::RightButton) 
     {
-        m_pMenu_R->move(ev->globalPos());
-        m_pMenu_R->show();
+        sm_RMenu->move(ev->globalPos());
+        sm_RMenu->show();
+        InitRMenu();
         return;
     }
     if (ev->button() == Qt::LeftButton) 
     {
-        int oldId = m_nSelectID;
-        m_nSelectID = m_nID;
-        emit UpdateUnits(oldId);
         OnSelect();
         return;
     }
@@ -183,10 +163,10 @@ void Unit::mouseReleaseEvent(QMouseEvent* ev)
 
 bool Unit::eventFilter(QObject* object, QEvent* event) 
 {
-    if (object == m_pUi->input) 
+    if (object->objectName() == "editor")
     {
         if (event->type() == QEvent::KeyPress) 
-        {            //回车键完成重命名
+        {   //回车键完成重命名
             QKeyEvent* e = static_cast <QKeyEvent*> (event);
             if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) 
             {
@@ -196,50 +176,114 @@ bool Unit::eventFilter(QObject* object, QEvent* event)
         }
     }
     if (event->type() == QEvent::MouseButtonPress) 
-    {        //点击任意处完成重命名
+    {   //点击任意处完成重命名
         RenameFinish();
         return true;
     }
     return false;
 }
 
-void Unit::MenuRename(bool b)
+void Unit::MenuRename()
 {
-    Q_UNUSED(b)
-    m_pUi->input->installEventFilter(this);                             //安装事件过滤器
+    sm_editor->installEventFilter(this);                 //安装事件过滤器
     //重命名
-    m_pUi->input->setText(m_pUi->text->toPlainText());
-    m_pUi->input->move(m_pUi->text->mapToGlobal(QPoint(0, 0)));
-    m_pUi->input->show();
-    m_pUi->input->activateWindow();                         //设置为顶层窗口
-    input_loop->exec();
+    sm_editor->setParent(this);
+    sm_editor->setGeometry(m_pUi->text->geometry());
+    sm_editor->setText(m_pUi->text->toPlainText());
+    sm_editor->activateWindow();                         //设置为顶层窗口
+    sm_editor->show();
+    sm_editorLoop.exec();
 }
 
-void Unit::MenuSetLove(bool b)
-{
-    Q_UNUSED(b)
-    //是否喜欢
-    if (m_arrMenu[1]->data() == 0) 
-    {
-        m_pDataHandle->GetData(m_nID)->SetLove(true);
-        m_arrMenu[1]->setText(menuNL);
-        m_arrMenu[1]->setData(1);
-    }
-    else 
-    {
-        m_pDataHandle->GetData(m_nID)->SetLove(false);
-        m_arrMenu[1]->setText(menuIL);
-        m_arrMenu[1]->setData(0);
-    }
+void Unit::MenuSetLove()
+{//是否喜欢
+    sm_pDataHandle->GetData(m_nID)->SetLove(sm_arrRMenuItems[1]->data() == 0);
 }
 
-void Unit::MenuDelete(bool b)
+void Unit::MenuDelete()
 {
-    Q_UNUSED(b)
     close();
+    sm_pDataHandle->DeleteData(m_nID);
     emit DeleteSig(m_nID);
 }
 
-ushort Unit::m_nWndW = 120;
-int Unit::m_nSelectID = -1;
-UnitMsgs* Unit::m_pDataHandle = nullptr;
+void Unit::MenuHide()
+{
+    QTimer::singleShot(20, this, [=]() {
+        sm_RMenu->disconnect();
+        });
+}
+
+void Unit::DesStaticRes()
+{
+    for (auto& it : sm_arrRMenuItems)
+    {
+        delete it;
+    }
+    sm_arrRMenuItems.empty();
+
+    Tools::Delete_Ex(sm_RMenu);
+    Tools::Delete_Ex(sm_editor);
+}
+
+void Unit::CreateStaticRes()
+{
+    if (sm_editor == nullptr)
+    {
+        sm_editor = new QTextEdit;
+        sm_editor->setObjectName("editor");
+    }
+   
+    sm_nWndW = UnitWidth / CONFIG->m_fScale;
+
+    if (sm_RMenu == nullptr)
+    {
+        sm_RMenu = new QMenu;
+    }
+
+    if (sm_arrRMenuItems.isEmpty())
+    {
+        QAction* temp = new QAction(menuRN, sm_RMenu);
+        temp->setObjectName("name");
+        sm_arrRMenuItems.append(temp);
+
+        temp = new QAction(menuIL, sm_RMenu);
+        temp->setObjectName("lover");
+        sm_arrRMenuItems.append(temp);
+
+        temp = new QAction(menuDe, sm_RMenu);
+        temp->setObjectName("delete");
+        sm_arrRMenuItems.append(temp);
+
+        for (auto& it : sm_arrRMenuItems)
+        {
+            sm_RMenu->addAction(it);
+        }
+    }
+}
+
+void Unit::MenuEven(QAction* pAction)
+{
+    QString strObject = pAction->objectName();
+    if (strObject == "name")
+    {
+        MenuRename();
+    }
+    else if (strObject == "lover")
+    {
+        MenuSetLove();
+    }
+    else if(strObject == "delete")
+    {
+        MenuDelete();
+    }
+}
+
+UnitMsgs* Unit::sm_pDataHandle = nullptr;
+Unit* Unit::sm_pRightClickUnit = nullptr;
+QMenu* Unit::sm_RMenu;
+QVector<QAction*> Unit::sm_arrRMenuItems;
+ushort Unit::sm_nWndW = UnitWidth;
+Unit* Unit::sm_pSelectUnit = nullptr;
+QTextEdit* Unit::sm_editor;
+QEventLoop  Unit::sm_editorLoop;

@@ -12,11 +12,6 @@ public:
 		LOCAL = 1,			//本地
 		INTERNET = 2		//网络
 	};
-	/*state说明
-	*从右到左
-	* 1.为1则喜欢，为0为非喜欢
-	* 2.为1则隐藏，为0则没有隐藏
-	*/
 
 	UnitMsg(QXmlStreamAttributes* attributes);
 	UnitMsg(QString strFileName, bool bHaveThumbnail = true);
@@ -33,7 +28,7 @@ public:
 	QDate GetMportTime();
 	QDate GetUserTime();
 	Source GetSource();
-	void SetName(QString strName);
+	bool SetName(QString strName);
 	void SetPhoto(QString strPath);
 	void SetVideo(QString strPath);
 	void SetMporTime(QDate date);
@@ -55,12 +50,17 @@ public:
 	{
 		if (bShow)
 		{
-			m_cState |= 1;
+			m_cState &= 255 ^ 1;
 		}
 		else
 		{
-			m_cState &= 255 ^ 1;
+			m_cState |= 1;
 		}
+	}
+
+	inline void Delete()
+	{
+		m_cState |= 4;
 	}
 
 	inline bool IsLove()
@@ -70,7 +70,7 @@ public:
 
 	inline bool IsShow()
 	{
-		return m_cState & 1;
+		return !((m_cState & 1) && (m_cState & 4));
 	}
 
 
@@ -82,4 +82,12 @@ private:
 	QDate m_dateUserTime;		//最后一次使用时间
 	Source m_source;			//来源
 	uchar m_cState;				//状态
+	/*state说明
+	*从右到左
+	* 1.为1则隐藏，为0则没有隐藏
+	* 2.为1则喜欢，为0为非喜欢
+	* 3.为1删除状态，为0则没有删除
+	*/
+
+	bool ReName(QString strNewName);		//更改资源文件夹名字
 };

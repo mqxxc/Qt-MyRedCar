@@ -36,6 +36,7 @@ public:
     virtual void GetJpg(QString path);
     virtual void SetLoop(QEventLoop* loop);
     virtual void Finish();
+    virtual void ReleaseScreenshot();
 
 
 private:

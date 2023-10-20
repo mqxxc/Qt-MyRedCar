@@ -54,7 +54,7 @@ DeskVideo::DeskVideo()
 
 	//读取上次保存的设置信息
 	QTimer::singleShot(10, this, [=]() {
-		if (CONFIG->m_strVideo.isEmpty()) 
+		if (CONFIG->m_strVideoPath.isEmpty()) 
 		{
 			emit NoVideo();			//上次无视频播放显示主窗口
 		}
@@ -77,7 +77,7 @@ DeskVideo::~DeskVideo()
 
 bool DeskVideo::ReplaceDesk() 
 {
-	if (CONFIG->m_strVideo.isEmpty()) 
+	if (CONFIG->m_strVideoPath.isEmpty()) 
 	{
 		m_pPlayer->StopPlay();
 		m_pDeskWnd->hide();
@@ -85,14 +85,14 @@ bool DeskVideo::ReplaceDesk()
 	}
 	else 
 	{
-		QString strPath = CONFIG->m_strVideo;
-		QFile video(CONFIG->m_strVideo);
+		QString strPath = CONFIG->m_strVideoPath;
+		QFile video(CONFIG->m_strVideoPath);
 		if (!video.exists()) 
 		{
 			QMessageBox::warning(nullptr, msgBoxTitle, fileNoFind);
 			return false;
 		}
-		m_pPlayer->SetVideo(CONFIG->m_strVideo);
+		m_pPlayer->SetVideo(CONFIG->m_strVideoPath);
 		m_pPlayer->PlayVideo();
 		m_pDeskWnd->show();
 		emit LoadFinish();

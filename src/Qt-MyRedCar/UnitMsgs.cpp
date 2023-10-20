@@ -1,7 +1,4 @@
-﻿#include <QLibrary>
-#include <QDateTime>
-#include <QFile>
-#include <QXmlStream.h>
+﻿#include <QXmlStream.h>
 #include <QMessageBox>
 #include <QFile>
 #define UnitMsgs_H
@@ -37,11 +34,10 @@ void UnitMsgs::AddData(QXmlStreamAttributes* attributes)
 	m_arrDatas.insert(m_arrDatas.size(), new UnitMsg(attributes));
 }
 
-void UnitMsgs::DeleteData(char id)
+void UnitMsgs::DeleteData(ushort id)
 {
 	delete m_arrDatas[id];
 	m_arrDatas[id] = nullptr;
-	m_arrDatas.remove(id);
 }
 
 UnitMsg* UnitMsgs::GetData(ushort id)
@@ -104,6 +100,10 @@ void UnitMsgs::SaveUnitMsgs()
 	dataWriter.writeStartElement("Items");
 	for (QVector<UnitMsg*>::const_iterator it = m_arrDatas.cbegin(); it != m_arrDatas.cend(); ++it)
 	{
+		if ((*it) == nullptr)
+		{
+			continue;
+		}
 		dataWriter.writeEmptyElement("Item");
 		dataWriter.writeAttribute("name", (*it)->WriteName());
 		dataWriter.writeAttribute("videoPath", (*it)->WriteVideoPath());

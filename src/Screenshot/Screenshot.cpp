@@ -132,6 +132,11 @@ void Screenshot::Finish()
     m_pLoop->exit();
 }
 
+void Screenshot::ReleaseScreenshot()
+{
+    delete this;
+}
+
 SCREENSHOT_EXPORT Screenshot* GetScreenshot()
 {
     return new Screenshot();

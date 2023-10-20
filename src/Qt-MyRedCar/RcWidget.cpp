@@ -1,9 +1,9 @@
-﻿#include <QDir>
-#include <QFile>
-#include <QMap>
+﻿#include <QMap>
+#include <QDir>
 #include <QLibrary>
 #include <QWheelEvent>
 #include <QCollator>
+#include <QEventLoop>
 #define RcWidget_H
 #include "macro.h"
 #include "Config.h"
@@ -14,58 +14,46 @@
 #pragma execution_character_set("utf-8")
 
 
-RcWidget::RcWidget(QWidget* parent) 
+RcWidget::RcWidget(QWidget* parent) :QWidget(parent)
 {
 //其他初始化
 	InitMember();
-	InitUnitSize();
 }
 
 RcWidget::~RcWidget() 
 {
 	m_pRcs->SaveUnitMsgs();
-//将本次运行的各种数据进行保存到本地缓存文件
 	delete m_pRcs;
-//回收units
-	for (int i = 0; i < m_arrUnits.size(); ++i)
-	{
-		delete m_arrUnits[i];
-	}
+	Unit::DesStaticRes();
 }
 
-void RcWidget::SetScaling(float fScaling)
+inline void RcWidget::InitMember()
 {
-	Unit::SetScaling(fScaling);
-}
-
-void RcWidget::InitMember()
-{
+	Unit::CreateStaticRes();
+	m_arrUnits.empty();
 	m_pRcs = new UnitMsgs;
+	Unit::SetDatas(m_pRcs);
 	m_nControlSig = 0;
 	SetOrder(true);
 	m_sortCriteria = SortCriteria::onoe;
 }
 
-void RcWidget::CreateUnit(int i)
-{
-	Unit::SetDatas(m_pRcs);
-	for (; i < m_pRcs->Count();++i) 
-	{
-		m_arrUnits.insert(i, new Unit(i, this));
-		connect(m_arrUnits[i], &Unit::UpdateUnits,  this, &RcWidget::SelectUnit);
-		connect(m_arrUnits[i], &Unit::RenameSig, this, &RcWidget::fileRename);
-		m_listIDList.append(i);
-	}
-}
-
-void RcWidget::InitUnitSize() 
+void RcWidget::ReUnitSize() 
 {
 //计算图片单元的大小
-	m_UnitMsg.m_nUnitW = Unit::GetWnd_Width();					//单元的宽
-	m_UnitMsg.m_nSpaceW = Unit::GetWnd_Width() / ratio;			//间隙宽
-	int divisor = m_UnitMsg.m_nUnitW + m_UnitMsg.m_nSpaceW;		//二者宽的和
+	m_UnitMsg.m_nUnitW = Unit::GetWnd_Width();						//单元的宽
+	m_UnitMsg.m_nSpaceW = Unit::GetWnd_Width() / ratio;				//间隙宽
+	int divisor = m_UnitMsg.m_nUnitW + m_UnitMsg.m_nSpaceW;			//二者宽的和
 	m_UnitMsg.m_nRowN = (m_nWndW - m_UnitMsg.m_nSpaceW) / divisor;	//一行能存放的个数
-	m_UnitMsg.m_nOffset= m_nWndW % divisor / 2;					//两边的偏移量
+	m_UnitMsg.m_nOffset= m_nWndW % divisor / 2;						//两边的偏移量
+}
+
+void RcWidget::CreateUnit()
+{
+	int nID = m_arrUnits.count();
+	m_arrUnits.insert(nID, new Unit(nID, this));
+	connect(m_arrUnits[nID], &Unit::SelectUnits, this, &RcWidget::SelectUnit);
+	m_listIDList.append(nID);
 }
 
 void RcWidget::RefreshUnit()
@@ -89,7 +77,6 @@ void RcWidget::RefreshUnit()
 
 void RcWidget::ShowUnit(int sum)
 {
-	UnitMsg* op = m_pRcs->GetData(sum);
 	if (!m_pRcs->GetData(sum)->IsShow())
 	{
 		return;
@@ -184,7 +171,10 @@ void RcWidget::IniUnits()
 		return;
 	}
 	m_pRcs->ReadUnitMsgs();
-	CreateUnit(0);
+	for (int i = 0; i < m_pRcs->Count(); ++i)
+	{
+		CreateUnit();
+	}
 	RefreshUnit();
 	emit IniFinish();
 }
@@ -193,15 +183,6 @@ void RcWidget::ChangeOrder(bool state)
 {
 	SetOrder(state);
 	RefreshUnit();
-}
-
-void RcWidget::AddUnit()
-{
-	int i = m_arrUnits.size() + 1;
-	CreateUnit(i);
-	m_arrUnits[i]->move(m_nLastUnitX, m_nLastUnitY);
-	m_arrUnits[i]->show();
-	ReckonNext();
 }
 
 void RcWidget::ReckonNext(){
@@ -230,72 +211,67 @@ inline void RcWidget::SetOrder(bool bNormal)
 	}
 }
 
-bool RcWidget::MoveFile(QString path)
+bool RcWidget::AddUnit(QString path)
 {
-	//QString filePath(this->path);
-	//QString video = (path.section("/", -1));
-	//QString name=video.section(".",-3,-2);			
-	//filePath.append(dataPath).append(name);			//以视频名字作为文件夹名字
-	//QDir dir;
-	//QFile file(path);
+	QString video = (path.section("/", -1));
+	QString name = video.section(".", -3, -2);
+	QString filePath = CONFIG->m_strAppPath + dataPath + name;			//以视频名字作为文件夹名字
+	QDir dir;
+	
+	if (!dir.mkdir(filePath))
+	{//创建文件夹
+		return false;
+	}
 
-	//if (dir.mkdir(filePath)) {			//创建文件夹
-	//	if (file.rename(filePath.append("/").append(video))) 
-	//	{
+	QFile file(path);
+	if (!file.copy(filePath.append("/").append(video)))
+	{//复制视频文件
+		return false;
+	}
 
-	//		QLibrary dll("Screenshot");
-	//		Screenshot* getPotho;
-	//		if(dll.load()) {
-	//			getPotho = ((Screenshot * (*)())(dll.resolve("getScrObj")))();
-	//		}
-	//		QEventLoop loop;
-	//		getPotho->SetLoop(&loop);
-	//		getPotho->GetJpg(filePath);
-	//		//dxg提示框正在导入
-	//		loop.exec();	
-	//		m_pRcs->addData(filePath, getPotho->IsSuccess());
+	QLibrary dll("Screenshot");
+	if (!dll.load())
+	{//加载制作缩略图dll
+		return false;
+	}
+	Screenshot* getPotho = ((Screenshot * (*)())(dll.resolve("getScrObj")))();
 
-	//		AddUnit();
-	//		
-	//		delete getPotho;
-	//		dll.unload();
-	//		return true;
-	//	}
-	//}
-	//return false;
-	return false;
+	QEventLoop loop;
+	getPotho->SetLoop(&loop);
+	getPotho->GetJpg(filePath);
+	//dxg提示框正在导入
+	loop.exec();
+	m_pRcs->AddData(filePath, getPotho->IsSuccess());
+
+	CreateUnit();
+	Unit* temp = m_arrUnits.last();
+	temp->move(m_nLastUnitX, m_nLastUnitY);
+	temp->show();
+	ReckonNext();
+
+	getPotho->ReleaseScreenshot();
+	dll.unload();
+
+	return true;
 }
 
 void RcWidget::resizeEvent(QResizeEvent* e)
 {
-	m_nWndW = this->size().width();
-	m_nWndH = this->size().height();
-	InitUnitSize();
+	m_nWndW = size().width();
+	m_nWndH = size().height();
+	ReUnitSize();
+	RefreshUnit();
 }
 
 void RcWidget::mousePressEvent(QMouseEvent* event)
 {
-	int nCurrentID = Unit::CurrentID();
-	Unit::ReleaseAll();
-	SelectUnit(nCurrentID);
-	emit SelectUnitSig("");
+	Unit::DeselectAll();
+	CONFIG->m_strVideoPath.clear();
+	emit SelectUnitSig();
 }
 
-void RcWidget::SelectUnit(int nOldID)
+void RcWidget::SelectUnit(int nCurrentID)
 {
-	if (nOldID != -1)
-	{
-		m_arrUnits.at(nOldID)->OnRelease();
-	}
-
-	int nCurrentID = Unit::CurrentID();
-	if (nCurrentID != -1)
-	{
-		emit SelectUnitSig(m_pRcs->GetData(nCurrentID)->GetVideoPath());
-	}
-}
-
-void  RcWidget::fileRename(int id,QString name)
-{
-	//仅仅更新文件夹的名字名字
+	CONFIG->m_strVideoPath = m_pRcs->GetData(nCurrentID)->GetVideoPath();
+	emit SelectUnitSig();
 }

@@ -43,6 +43,7 @@
     <ClCompile Include="UnitMsg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="源文件">
@@ -57,11 +58,14 @@
     <Filter Include="UI文件">
       <UniqueIdentifier>{02cec9f2-64bf-43bd-ad58-a3d2c5763c63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Unit">
+      <UniqueIdentifier>{4378d4e4-b2cd-4bd2-832f-46aa0bcb44e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainWnd">
+      <UniqueIdentifier>{793b3c6c-df69-48be-8e58-6fd00c054187}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Elastic.h">
-      <Filter>头文件</Filter>
-    </QtMoc>
     <QtMoc Include="Tray.h">
       <Filter>头文件</Filter>
     </QtMoc>
@@ -77,19 +81,22 @@
     <QtMoc Include="awaken_source.h">
       <Filter>头文件</Filter>
     </QtMoc>
-    <QtMoc Include="About.h">
-      <Filter>头文件</Filter>
-    </QtMoc>
-    <QtMoc Include="QtMyRedCar.h">
-      <Filter>头文件</Filter>
-    </QtMoc>
-    <QtMoc Include="RcWidget.h">
-      <Filter>头文件</Filter>
-    </QtMoc>
     <QtMoc Include="set.h">
       <Filter>头文件</Filter>
     </QtMoc>
     <QtMoc Include="Unit.h">
+      <Filter>Unit</Filter>
+    </QtMoc>
+    <QtMoc Include="QtMyRedCar.h">
+      <Filter>MainWnd</Filter>
+    </QtMoc>
+    <QtMoc Include="RcWidget.h">
+      <Filter>MainWnd</Filter>
+    </QtMoc>
+    <QtMoc Include="Elastic.h">
+      <Filter>MainWnd</Filter>
+    </QtMoc>
+    <QtMoc Include="About.h">
       <Filter>头文件</Filter>
     </QtMoc>
   </ItemGroup>
@@ -111,15 +118,16 @@
     <ClInclude Include="macro.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UnitMsgs.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UnitMsg.h">
-      <Filter>头文件</Filter>
+      <Filter>Unit</Filter>
     </ClInclude>
+    <ClInclude Include="UnitMsgs.h">
+      <Filter>Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\qtmyredcar.qrc">

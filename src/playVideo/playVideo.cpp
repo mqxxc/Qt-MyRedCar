@@ -71,6 +71,11 @@ void VideoPalyer::Getduration(qint64 playtime)
 	}
 }
 
+void VideoPalyer::ReleasePlayVideo()
+{
+	delete this;
+}
+
 VideoPalyer* GetpPlayVideo(QWidget* parent)
 {
 	return new VideoPalyer(parent);

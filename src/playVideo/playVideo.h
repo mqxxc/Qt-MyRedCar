@@ -27,6 +27,7 @@ public:
     virtual void StopPlay();                        //停止播放并删除媒体缓存
     virtual void PauseVideo();                      //暂停播放
     virtual void StartVideo();                      //继续播放
+    virtual void ReleasePlayVideo();                //释放实例
 
 private slots:
     void Getduration(qint64 playtime);              //获取播放时长

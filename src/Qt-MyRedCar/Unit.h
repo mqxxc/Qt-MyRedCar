@@ -4,6 +4,7 @@
 class QMenu;
 class QEventLoop;
 class UnitMsgs;
+class QTextEdit;
 namespace Ui { class Unit; }
 				
 
@@ -12,47 +13,51 @@ class Unit:public QWidget
 	Q_OBJECT
 
 public:
-	Unit(int id, QWidget* parent = Q_NULLPTR);
-	~Unit();
-	static void SetScaling(float scaling);		//设置窗口缩放比例
 	static int GetWnd_Width();					//获取窗口大小
-	static int CurrentID();						//获取当前选中的单元id号
+	static Unit* SelectUnit();					//获取当前选中的单元
 	static void SetDatas(UnitMsgs* handle);		//设置数据源
-	static void ReleaseAll();					//取消选择全部
-	void OnRelease();							//取消选中
-
+	static void DeselectAll();					//取消选择全部
+	static void CreateStaticRes();				//创建动态资源
+	static void DesStaticRes();					//销毁静态资源
+	Unit(int id, QWidget* parent = nullptr);
+	~Unit();
+	inline int GetID()
+	{
+		return m_nID;
+	};
+	
 
 private:
+	static UnitMsgs* sm_pDataHandle;			//数据源
+	static Unit* sm_pRightClickUnit;			//右键单元
+	static QMenu* sm_RMenu;						//右键菜单
+	static QVector<QAction*> sm_arrRMenuItems;	//菜单项
+	static ushort sm_nWndW;						//窗口宽
+	static Unit* sm_pSelectUnit;				//被选中的单元
+	static QTextEdit* sm_editor;				//重命名编辑器
+	static QEventLoop sm_editorLoop;			//重命名文本输入框的事件循环
 	Ui::Unit* m_pUi;							//ui界面
-	QMenu* m_pMenu_R;							//右键菜单
-	QVector<QAction*> m_arrMenu;				//菜单项
-	QEventLoop* input_loop;						//重命名文本输入框的事件循环
 	int m_nID;									//资源信息ID
-	static ushort m_nWndW;						//窗口宽
-	static int m_nSelectID;						//被选中的单元的id
-	static UnitMsgs* m_pDataHandle;				//数据源
-
-	void InitUi();								//初始化ui界面
-	void InitMember();							//初始化变量
+	
+	inline void InitUi();						//初始化ui界面
 	void InitRMenu();							//初始化右键菜单
-	void SetWndW();								//设置窗口的宽
 	void OnSelect();							//被选中
+	void OnRelease();							//取消选中
 	void RenameFinish();						//重命名菜单操作完成
-	void UpdateUnitPath(QString name);			//修改单元名字以及图片路径
+	void mouseReleaseEvent(QMouseEvent* ev);	//鼠标释放事件
+	bool eventFilter(QObject* object, QEvent* event);   //子控件事件监听器
 
 
 signals:
-	void UpdateUnits(int oldId);				//请求更新指定id号的单元状态
-	void RenameSig(int id, QString name);		//重命名信号
-	void DeleteSig(int id);						//删除信号
+	void SelectUnits(int nCurrentID);			//选中单元事件
+	void DeleteSig(int nCurrentID);				//删除信号
 
 
 private slots:
-	void mouseReleaseEvent(QMouseEvent* ev);
-	bool eventFilter(QObject* object, QEvent* event);   //子控件事件监听器
-	//右键菜单处理
 	/*dxg以后用windows钩子解决重命名输入框问题*/
-	void MenuRename(bool b);					//重命名
-	void MenuSetLove(bool b);					//是否喜欢
-	void MenuDelete(bool b);					//删除
+	void MenuRename();					//重命名
+	void MenuSetLove();					//是否喜欢
+	void MenuDelete();					//删除
+	void MenuHide();					//右键菜单隐藏事件
+	void MenuEven(QAction* pAction);	//菜单项触发事件
 };

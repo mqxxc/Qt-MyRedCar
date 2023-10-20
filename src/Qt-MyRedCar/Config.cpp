@@ -69,13 +69,13 @@ inline void Config::SaveConifgAll()
 inline void Config::WritePlay(QDomElement* element)
 {
 	element->firstChildElement("volume").setAttribute("value", QString::number(m_nLVolume));
-	element->firstChildElement("playing").setAttribute("path", m_strVideo);
+	element->firstChildElement("playing").setAttribute("path", m_strVideoPath);
 }
 
 inline void Config::ReadPlay(QDomElement* element)
 {
 	m_nLVolume = element->firstChildElement("volume").attribute("value", "100").toInt();
-	m_strVideo = element->firstChildElement("playing").attribute("path");
+	m_strVideoPath = element->firstChildElement("playing").attribute("path");
 }
 
 Config::~Config()

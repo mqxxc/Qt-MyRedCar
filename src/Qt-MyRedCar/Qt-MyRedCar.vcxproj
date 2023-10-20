@@ -107,6 +107,7 @@
     <ClCompile Include="About.cpp" />
     <ClCompile Include="awaken_source.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Tools.cpp" />
     <ClCompile Include="UnitMsgs.cpp" />
     <ClCompile Include="DeskVideo.cpp" />
     <ClCompile Include="Elastic.cpp" />
@@ -128,6 +129,7 @@
     <QtMoc Include="RcWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Tools.h" />
     <ClInclude Include="UnitMsg.h" />
     <QtMoc Include="DeskVideo.h" />
     <QtMoc Include="awaken_source.h" />

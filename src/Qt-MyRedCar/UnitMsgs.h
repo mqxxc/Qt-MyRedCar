@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <QVector>
-#include <QDate>
 #include "UnitMsg.h"
 class QXmlStreamReader;
 
@@ -12,7 +11,7 @@ public:
 	//数据增删改查
 	void AddData(QString fileNmae,bool success=true);
 	void AddData(QXmlStreamAttributes* attributes);
-	void DeleteData(char id);
+	void DeleteData(ushort id);
 	UnitMsg* GetData(ushort id);
 	//其他
 	int Count();								//统计资源数

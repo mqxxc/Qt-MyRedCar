@@ -1,4 +1,5 @@
 ﻿#include <QXmlStreamAttributes>
+#include <QFile>
 #define UnitMsg_H
 #include "macro.h"
 #include "UnitMsg.h"
@@ -125,9 +126,17 @@ UnitMsg::Source UnitMsg::GetSource()
 	return m_source;
 }
 
-void UnitMsg::SetName(QString strName)
+bool UnitMsg::SetName(QString strName)
 {
-	m_strName = strName;
+	if (ReName(strName))
+	{
+		m_strName = strName;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void UnitMsg::SetPhoto(QString strPath)
@@ -153,4 +162,15 @@ void UnitMsg::SetUserTime(QDate date)
 void UnitMsg::SetSource(Source source)
 {
 	m_source = source;
+}
+
+bool UnitMsg::ReName(QString strNewName)
+{
+	QFile file(CONFIG->m_strAppPath + recordPath + m_strName);
+	if (!file.exists())
+	{
+		return false;
+	}
+
+	return file.rename(CONFIG->m_strAppPath + recordPath + strNewName);
 }
