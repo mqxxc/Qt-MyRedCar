@@ -105,11 +105,6 @@ Unit* Unit::SelectUnit()
 
 void Unit::SetDatas(UnitMsgs* handle)
 {
-    if (sm_pDataHandle != nullptr)
-    {
-        delete sm_pDataHandle;
-    }
-
     sm_pDataHandle = handle;
 }
 

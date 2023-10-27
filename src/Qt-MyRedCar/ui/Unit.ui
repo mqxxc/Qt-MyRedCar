@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color:rgb(0, 0, 0,90);
+    <string notr="true">background-color:rgba(0, 0, 0,90);
 font:15pt &quot;Agency FB&quot;;
 border-style:none;</string>
    </property>

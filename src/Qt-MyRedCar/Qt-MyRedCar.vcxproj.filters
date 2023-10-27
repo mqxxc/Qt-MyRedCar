@@ -43,7 +43,9 @@
     <ClCompile Include="UnitMsg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="Tools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="源文件">
@@ -127,7 +129,9 @@
     <ClInclude Include="UnitMsgs.h">
       <Filter>Unit</Filter>
     </ClInclude>
-    <ClInclude Include="Tools.h" />
+    <ClInclude Include="Tools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\qtmyredcar.qrc">

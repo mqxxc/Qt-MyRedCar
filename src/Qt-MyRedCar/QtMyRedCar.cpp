@@ -30,7 +30,7 @@ QtMyRedCar::QtMyRedCar(QWidget* parent) : QWidget(parent)
 QtMyRedCar::~QtMyRedCar() 
 {
 	delete m_pEvenRoot;
-	if (m_pPlayer == nullptr)
+	if (m_pPlayer != nullptr)
 	{
 		m_pPlayer->ReleasePlayVideo();
 		m_pPlayer = nullptr;

@@ -5,6 +5,7 @@
 #include "macro.h"
 #include "UnitMsgs.h"
 #include "Config.h"
+#include "Tools.h"
 #pragma execution_character_set("utf-8")
 
 UnitMsgs::UnitMsgs()
@@ -17,9 +18,13 @@ UnitMsgs::~UnitMsgs()
 	{
 		for (int i = 0; i < m_arrDatas.size(); ++i)
 		{
-			delete m_arrDatas[i];
+			if (m_arrDatas[i] != nullptr)
+			{
+				delete m_arrDatas[i];
+			}
 		}
 	}
+	m_arrDatas.clear();
 }
 
 void UnitMsgs::AddData(QString fileNmae, bool success)

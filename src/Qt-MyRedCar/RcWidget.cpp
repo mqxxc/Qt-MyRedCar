@@ -23,6 +23,7 @@ RcWidget::RcWidget(QWidget* parent) :QWidget(parent)
 RcWidget::~RcWidget() 
 {
 	m_pRcs->SaveUnitMsgs();
+	Unit::SetDatas(nullptr);
 	delete m_pRcs;
 	Unit::DesStaticRes();
 }
@@ -229,12 +230,12 @@ bool RcWidget::AddUnit(QString path)
 		return false;
 	}
 
-	QLibrary dll("Screenshot");
+	QLibrary dll(CONFIG->m_strAppPath + "/dll/Screenshot");
 	if (!dll.load())
-	{//加载制作缩略图dll
+	{//加载制作缩略图dll，DXG改为生成缩略图失败后绑定默认缩略图
 		return false;
 	}
-	Screenshot* getPotho = ((Screenshot * (*)())(dll.resolve("getScrObj")))();
+	Screenshot* getPotho = ((Screenshot * (*)())(dll.resolve("GetScreenshot")))();
 
 	QEventLoop loop;
 	getPotho->SetLoop(&loop);

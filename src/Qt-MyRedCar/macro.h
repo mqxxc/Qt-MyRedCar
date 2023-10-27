@@ -34,7 +34,7 @@
 
 //Uint
 #ifdef Unit_H
-#define UnitWidth 120						//开发机推荐单元宽	
+#define UnitWidth 120					//开发机推荐单元宽	
 #define menuRN "重命名 "				//菜单项文本
 #define menuNL "取消喜欢 "				//菜单项文本
 #define menuIL "设为喜欢 "				//菜单项文本
@@ -45,7 +45,7 @@
 //RcWidget
 #ifdef RcWidget_H
 #define ratio 8							//控件与空隙的比
-#define dataPath "/data/"				//资源文件中间路径
+#define dataPath "/res/media/"			//资源文件中间路径
 #define comboBox_onne "默认"			//筛选框0
 #define comboBox_name "名字 "			//筛选框1
 #define comboBox_iTime "添加时间 "		//筛选框2

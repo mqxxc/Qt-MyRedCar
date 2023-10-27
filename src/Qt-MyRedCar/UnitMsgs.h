@@ -8,7 +8,7 @@ class UnitMsgs
 public:
 	UnitMsgs();
 	~UnitMsgs();
-	//数据增删改查
+	//数据操作
 	void AddData(QString fileNmae,bool success=true);
 	void AddData(QXmlStreamAttributes* attributes);
 	void DeleteData(ushort id);
@@ -16,7 +16,7 @@ public:
 	//其他
 	int Count();								//统计资源数
 	void ReFresh(bool bIsShow);					//刷新所有资源显示状态
-	void ReadUnitMsgs();						//从文件信息中保存信息
+	void ReadUnitMsgs();						//从文件中读取单元信息
 	void SaveUnitMsgs();						//保存所有单元信息
 	
 
