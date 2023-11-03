@@ -87,14 +87,15 @@ void StartUp::Loading()
 		m_pLoadProc = new QProcess;
 	}
 
-	m_pLoadProc->start(CONFIG->m_strAppPath + "/" + load_path);
+	m_pLoadProc->start(CONFIG->m_strAppPath + load_path);
 }
 
 void StartUp::loadFinish()
 {
 	if (m_pLoadProc != nullptr) 
 	{
-		m_pLoadProc->terminate();
+		m_pLoadProc->kill();
+		m_pLoadProc->waitForFinished();
 		delete m_pLoadProc;
 		m_pLoadProc = nullptr;
 	}

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Config.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThemeWnd.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Elastic.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RcWidget.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitMsg.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitMsgs.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Set.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SetConfig.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="About.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Config.h">
+      <Filter>Adjunct</Filter>
+    </ClInclude>
+    <ClInclude Include="macro.h">
+      <Filter>Adjunct</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwnd_global.h">
+      <Filter>Adjunct</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitMsg.h">
+      <Filter>Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitMsgs.h">
+      <Filter>Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.h">
+      <Filter>Adjunct</Filter>
+    </ClInclude>
+    <ClInclude Include="SetConfig.h">
+      <Filter>Adjunct</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Adjunct">
+      <UniqueIdentifier>{8ee4f137-1ff9-47a9-a8b9-05ca54771157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{9fd7fd4d-6704-48be-9576-025c38770272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wnd">
+      <UniqueIdentifier>{fbd6b9a7-10c6-4070-b729-babc6c562c0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Unit">
+      <UniqueIdentifier>{3b797a88-f989-4b12-a033-158fb23db0ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Elastic.h">
+      <Filter>Adjunct</Filter>
+    </QtMoc>
+    <QtMoc Include="RcWidget.h">
+      <Filter>Wnd</Filter>
+    </QtMoc>
+    <QtMoc Include="Unit.h">
+      <Filter>Unit</Filter>
+    </QtMoc>
+    <QtMoc Include="set.h">
+      <Filter>Wnd</Filter>
+    </QtMoc>
+    <QtMoc Include="ThemeWnd.h">
+      <Filter>Wnd</Filter>
+    </QtMoc>
+    <QtMoc Include="About.h">
+      <Filter>Wnd</Filter>
+    </QtMoc>
+  </ItemGroup>
+</Project>

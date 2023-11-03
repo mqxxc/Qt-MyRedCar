@@ -50,7 +50,7 @@ void Tray::init()
 
 void Tray::InitTray()
 {
-    m_pTrayIco->setIcon(QIcon(CONFIG->m_strAppPath + icoPath));  //设定托盘图标
+    m_pTrayIco->setIcon(QIcon(CONFIG->m_strAppPath + appIcoPath));  //设定托盘图标
     m_pTrayIco->setToolTip(TrayTitle);                         //提示文字
     m_pTrayIco->setContextMenu(m_pMenu);
     m_pTrayIco->hide();

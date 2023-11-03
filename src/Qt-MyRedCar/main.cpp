@@ -16,7 +16,8 @@ bool testApp();
 int main(int argc, char* argv[]) 
 {
 	QApplication app(argc, argv);
-	app.setWindowIcon(QIcon("://QtMyRedCar/taskbar"));
+	QIcon ico(":/QtMyRedCar/taskbar");
+	app.setWindowIcon(ico);
 
 	if (testApp()) 
 	{			//检查是否重复启动
