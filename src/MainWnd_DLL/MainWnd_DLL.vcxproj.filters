@@ -28,12 +28,6 @@
     <ClCompile Include="Set.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="SetConfig.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="About.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h">
@@ -52,9 +46,6 @@
       <Filter>Unit</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.h">
-      <Filter>Adjunct</Filter>
-    </ClInclude>
-    <ClInclude Include="SetConfig.h">
       <Filter>Adjunct</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,9 +77,6 @@
       <Filter>Wnd</Filter>
     </QtMoc>
     <QtMoc Include="ThemeWnd.h">
-      <Filter>Wnd</Filter>
-    </QtMoc>
-    <QtMoc Include="About.h">
       <Filter>Wnd</Filter>
     </QtMoc>
   </ItemGroup>

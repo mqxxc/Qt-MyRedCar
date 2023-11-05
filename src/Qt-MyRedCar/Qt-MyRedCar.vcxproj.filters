@@ -22,6 +22,9 @@
     <ClCompile Include="About.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="源文件">
@@ -35,9 +38,6 @@
     </Filter>
     <Filter Include="UI文件">
       <UniqueIdentifier>{02cec9f2-64bf-43bd-ad58-a3d2c5763c63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MainWnd">
-      <UniqueIdentifier>{793b3c6c-df69-48be-8e58-6fd00c054187}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +73,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

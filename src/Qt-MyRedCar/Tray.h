@@ -15,7 +15,7 @@ class Tray :public QObject
 	Q_OBJECT
 
 public:
-	Tray();
+	Tray(QObject* parent = nullptr);
 	~Tray();
 
 	void show();									//显示托盘

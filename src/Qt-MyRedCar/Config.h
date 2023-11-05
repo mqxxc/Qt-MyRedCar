@@ -8,8 +8,6 @@ class QDomElement;
 class Config
 {
 public:
-	QString m_strAppPath;			//程序运行路径结尾无“/”或者“\”
-	double m_fScale;				//程序窗口自适应大小缩放比例
 	uchar m_nLVolume;				//视频音量
 	QString m_strVideoPath;			//播放的视频路径
 

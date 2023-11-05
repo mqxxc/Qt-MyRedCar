@@ -104,6 +104,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.cpp" />
     <ClCompile Include="About.cpp" />
     <ClCompile Include="awaken_source.cpp" />
     <ClCompile Include="Config.cpp" />
@@ -118,11 +119,12 @@
     <QtMoc Include="DeskVideo.h" />
     <QtMoc Include="awaken_source.h" />
     <QtMoc Include="rep_awaken_source.h" />
+    <QtMoc Include="About.h" />
+    <ClInclude Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="macro.h" />
     <QtMoc Include="StartUp.h" />
     <QtMoc Include="Tray.h" />
-    <QtMoc Include="About.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\qtmyredcar.qrc" />

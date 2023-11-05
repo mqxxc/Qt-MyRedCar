@@ -3,12 +3,14 @@
 #include <QApplication>
 #define STARTUP_H
 #include "macro.h"
-#include "qtmyredcar.h"
 #include "Tray.h"
 #include "DeskVideo.h"
 #include "awaken_source.h"
 #include "StartUp.h"
 #include "Config.h"
+#include "../MainWnd_DLL/ThemeWnd.h"
+#include "../three/YQTools_Qt/YQTools_Qt.h"
+#pragma execution_character_set("utf-8")
 
 StartUp::StartUp() 
 {
@@ -20,12 +22,21 @@ StartUp::StartUp()
 StartUp::~StartUp() 
 {
 	disconnect();
-	if (m_pMainWnd != nullptr)
-	{
-		delete m_pMainWnd;
-	}
+	loadFinish();
 	delete m_pDesk;
 	delete m_pTray;
+	if (m_pDllMainWnd != nullptr)
+	{
+		if (m_pDllMainWnd->isLoaded())
+		{
+			if (m_pMainWnd != nullptr)
+			{
+				m_pMainWnd->ReleaseInstance();
+			}
+		}
+		m_pDllMainWnd->unload();
+	}
+	delete m_pDllMainWnd;
 }
 
 void StartUp::setApp(QApplication* app)
@@ -75,9 +86,10 @@ void StartUp::initMember()
 {
 	m_pLoadProc = nullptr;
 	m_pMainWnd = nullptr;
-	m_pTray = new Tray;
-	m_pDesk = new DeskVideo;
-	m_pSrever = new Server;
+	m_pTray = new Tray(this);
+	m_pDesk = new DeskVideo(this);
+	m_pSrever = new Server(this);
+	m_pDllMainWnd = nullptr;
 }
 
 void StartUp::Loading()
@@ -87,7 +99,7 @@ void StartUp::Loading()
 		m_pLoadProc = new QProcess;
 	}
 
-	m_pLoadProc->start(CONFIG->m_strAppPath + load_path);
+	m_pLoadProc->start(YQTools_Qt::ToAbsolutePath(load_path));
 }
 
 void StartUp::loadFinish()
@@ -101,28 +113,42 @@ void StartUp::loadFinish()
 	}
 }
 
-void StartUp::connectForMW()
-{
-	connect(m_pMainWnd, &QtMyRedCar::MainAppExit,		this, &StartUp::exitToApp);
-	connect(m_pMainWnd, &QtMyRedCar::WndToClear,		this, &StartUp::mainWidDelete);
-	connect(m_pMainWnd, &QtMyRedCar::UpDesk,			m_pDesk, &DeskVideo::ReplaceDesk);
-	connect(m_pMainWnd, &QtMyRedCar::UpDesk,			m_pTray, &Tray::SetState);
-	connect(m_pMainWnd, &QtMyRedCar::LoadFinishSig,    this, &StartUp::mainWidShow);
-}
-
 void StartUp::exitToApp()
 {
 	m_pApp->exit();
 }
 
+void StartUp::UpdateDesVidoe(QString strVideoPath)
+{
+	CONFIG->m_strVideoPath = strVideoPath;
+	m_pDesk->ReplaceDesk();
+	m_pTray->SetState();
+}
+
 void StartUp::mainWidNew()
 {
 	Loading();
-	m_pMainWnd = new QtMyRedCar;
-	connectForMW();
+	if (m_pDllMainWnd == nullptr)
+	{
+		m_pDllMainWnd = new QLibrary(YQTools_Qt::ToAbsolutePath("dll/MainWnd_DLL"));
+	}
+	if (!m_pDllMainWnd->isLoaded())
+	{
+		m_pDllMainWnd->load();
+		((void(*)(QString))(m_pDllMainWnd->resolve("SetRunPath")))(YQTools_Qt::ToAbsolutePath(""));
+		((void(*)(float))(m_pDllMainWnd->resolve("SetScaling")))(1);
+	}
+	if (m_pMainWnd == nullptr)
+	{
+		m_pMainWnd = ((ThemeWnd * (*)(QWidget* ))(m_pDllMainWnd->resolve("GetThemeWnd")))(nullptr);
+		m_pMainWnd->ConnectSig(SIGNAL(MainAppExit()), this, SLOT(exitToApp()));
+		m_pMainWnd->ConnectSig(SIGNAL(WndClose()), this, SLOT(mainWidDelete()));
+		m_pMainWnd->ConnectSig(SIGNAL(UpdateDesVidoe(QString)), this, SLOT(UpdateDesVidoe(QString)));
+		m_pMainWnd->ConnectSig(SIGNAL(LoadFinishSig()), this, SLOT(mainWidShow()));
+	}
 	m_pMainWnd->show();
 	m_pMainWnd->hide();
-	m_pMainWnd->IniUnits();
+	m_pMainWnd->LoadingRc();
 }
 
 void StartUp::mainWidShow()
@@ -141,8 +167,17 @@ void StartUp::mainWidDelete()
 {
 	if (m_pMainWnd != nullptr)
 	{
-		delete m_pMainWnd;
+		m_pMainWnd->ReleaseInstance();
 		m_pMainWnd = nullptr;
 		m_pTray->show();
+	}
+	if (m_pDllMainWnd->isLoaded())
+	{
+		m_pDllMainWnd->unload();
+	}
+	if (m_pDllMainWnd != nullptr)
+	{
+		delete m_pDllMainWnd;
+		m_pDllMainWnd = nullptr;
 	}
 }

@@ -24,7 +24,7 @@ class Server : public QObject
     Q_OBJECT
 
 public:
-    explicit Server(QWidget* parent = nullptr);
+    explicit Server(QObject* parent = nullptr);
     ~Server();
 
 

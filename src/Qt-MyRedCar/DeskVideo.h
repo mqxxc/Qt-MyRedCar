@@ -10,7 +10,7 @@ class DeskVideo:public QObject
 	Q_OBJECT
 
 public:
-	DeskVideo();
+	DeskVideo(QObject* parent = nullptr);
 	~DeskVideo();
 	bool ReplaceDesk();						//替换桌面
 

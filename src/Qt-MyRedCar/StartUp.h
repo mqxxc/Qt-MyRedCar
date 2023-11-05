@@ -5,7 +5,9 @@ class Tray;
 class DeskVideo;
 class QProcess;
 class Server;
-#pragma execution_character_set("utf-8")
+class QLibrary;
+class ThemeWnd;
+
 
 class StartUp : public QObject 
 {
@@ -18,24 +20,19 @@ public:
 	
 
 private:
-	QtMyRedCar* m_pMainWnd;					//应用主窗口
+	ThemeWnd* m_pMainWnd;					//应用主窗口
 	Tray* m_pTray;							//托盘
 	DeskVideo* m_pDesk;						//桌面视频类
 	QApplication* m_pApp;					//事件循环实例
 	QProcess* m_pLoadProc;					//加载界面进程
 	Server* m_pSrever;						//进程服务端
+	QLibrary* m_pDllMainWnd;				//主窗口dll实例
 
 	void init();
 	void initMember();
 	void Loading();
 	void loadFinish();
-	void connectForMW();					//有关主窗口的信号联系
-	void connectForOther();					//其他类的信号联系
-	void exitToApp();						//结束事件循环退出应用		
-
-
-signals:
-	void appExit();
+	inline void connectForOther();			//除主窗口以外的信号连接
 
 
 private slots:
@@ -44,4 +41,6 @@ private slots:
 	void mainWidShow();						//主窗口展示
 	void mainAwaken();						//主窗口唤醒
 	void awakenExe();						//重复启动唤醒主窗口
+	void exitToApp();						//结束事件循环退出应用	
+	void UpdateDesVidoe(QString strVideoPath);//更新桌面视频
 };

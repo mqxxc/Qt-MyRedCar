@@ -1,5 +1,4 @@
-#pragma once
-
+﻿#pragma once
 #include <QtCore/qglobal.h>
 
 #ifndef BUILD_STATIC

@@ -94,21 +94,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.cpp" />
-    <ClCompile Include="About.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Elastic.cpp" />
     <ClCompile Include="RcWidget.cpp" />
     <ClCompile Include="Set.cpp" />
-    <ClCompile Include="SetConfig.cpp" />
     <ClCompile Include="ThemeWnd.cpp" />
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="UnitMsg.cpp" />
     <ClCompile Include="UnitMsgs.cpp" />
     <ClInclude Include="..\..\..\YQTools_Qt\dist\include\YQTools_Qt.h" />
-    <QtMoc Include="About.h" />
     <ClInclude Include="Config.h" />
     <QtMoc Include="set.h" />
-    <ClInclude Include="SetConfig.h" />
     <ClInclude Include="UnitMsg.h" />
     <ClInclude Include="UnitMsgs.h" />
     <QtMoc Include="Unit.h" />

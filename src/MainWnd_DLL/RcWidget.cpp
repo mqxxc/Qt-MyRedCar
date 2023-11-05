@@ -236,7 +236,7 @@ bool RcWidget::AddUnit(QString path)
 	{//加载制作缩略图dll，DXG改为生成缩略图失败后绑定默认缩略图
 		return false;
 	}
-	Screenshot* getPotho = ((Screenshot * (*)())(dll.resolve("GetScreenshot")))();
+	Screenshot* getPotho = ((Screenshot* (*)())(dll.resolve("GetScreenshot")))();
 
 	QEventLoop loop;
 	getPotho->SetLoop(&loop);

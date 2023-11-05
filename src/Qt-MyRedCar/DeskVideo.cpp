@@ -1,16 +1,17 @@
-﻿#include<Windows.h>
-#include<Qlibrary>
-#include<QWindow>
-#include<QTimer>
-#include<QWidget>
-#include<QVariant>
-#include<QFile>
-#include<QMessageBox>
+﻿#include <Windows.h>
+#include <Qlibrary>
+#include <QWindow>
+#include <QTimer>
+#include <QWidget>
+#include <QVariant>
+#include <QFile>
+#include <QMessageBox>
 #define DeskVideo_H
 #include "macro.h"
-#include"DeskVideo.h"
+#include "DeskVideo.h"
 #include "Config.h"
-#include"../playVideo/playVideo.h"
+#include "../playVideo_DLL/playVideo.h"
+#include "../three/YQTools_Qt/YQTools_Qt.h"
 
 //查找windows壁纸层窗口并隐藏
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM Lparam) 
@@ -26,12 +27,12 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM Lparam)
 	return true;
 }
 
-DeskVideo::DeskVideo() 
+DeskVideo::DeskVideo(QObject* parent) : QObject(parent)
 {
 	//初始化变量
 	m_pDeskWnd = new QWidget();
 	m_pPlayer = nullptr;
-	m_pPlayDll = new QLibrary(CONFIG->m_strAppPath + "/dll/playVideo");
+	m_pPlayDll = new QLibrary(YQTools_Qt::ToAbsolutePath("/dll/playVideo"));
 	
 	HWND hProgman = FindWindow(L"Progman", 0);				//找到PM窗口
 	SendMessageTimeout(hProgman, 0x52C, 0, 0, 0, 100, 0);	//给它发特殊消息
@@ -67,7 +68,7 @@ DeskVideo::DeskVideo()
 	});
 }
 
-DeskVideo::~DeskVideo() 
+DeskVideo::~DeskVideo()
 {
 	delete m_pPlayer;
 	m_pPlayDll->unload();

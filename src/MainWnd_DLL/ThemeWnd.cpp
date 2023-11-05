@@ -26,8 +26,6 @@ ThemeWnd::ThemeWnd(QWidget* parent) : QFrame(parent)
 {
 	IniFace();
 	IniData();
-	connect(m_pRcWnd, &RcWidget::SelectUnitSig, this, &ThemeWnd::PreviewVideo);
-	connect(m_pRcWnd, &RcWidget::IniFinish, this, &ThemeWnd::LoadFinish);
 	connect(this, &ThemeWnd::SearchUnit, m_pRcWnd, &RcWidget::SearchUnits);
 	connect(this, &ThemeWnd::UnitsOrderChange, m_pRcWnd, &RcWidget::ChangeOrder);
 }
@@ -51,6 +49,17 @@ void ThemeWnd::LoadingRc()
 {
 	m_pRcWnd->IniUnits();
 	on_order_clicked();
+}
+
+void ThemeWnd::ReleaseInstance()
+{
+	disconnect();
+	delete this;
+}
+
+void ThemeWnd::ConnectSig(const char* strSig, QObject* obj, const char* strSlot)
+{
+	connect(this, strSig, obj, strSlot);
 }
 
 inline void ThemeWnd::IniFace()
@@ -133,7 +142,8 @@ inline QFrame* ThemeWnd::IniMainBody()
 	QScrollArea* pRcArea = new QScrollArea(pMainWnd);
 	pRcArea->setStyleSheet("border:none");
 	m_pRcWnd = new RcWidget(pMainWnd);
-	connect(m_pRcWnd, &RcWidget::IniFinish, [&]() {
+	connect(m_pRcWnd, &RcWidget::SelectUnitSig, this, &ThemeWnd::PreviewVideo);
+	connect(m_pRcWnd, &RcWidget::IniFinish, this, [&]() {
 		emit LoadFinish();
 		});
 	pRcArea->setWidgetResizable(true);
@@ -528,4 +538,24 @@ void ThemeWnd::PreviewVideo()
 			}
 		}
 	}
+}
+
+void ThemeWnd::LoadFinish()
+{
+	emit LoadFinishSig();
+}
+
+MAINWND_EXPORT ThemeWnd* GetThemeWnd(QWidget* parent)
+{
+	return new ThemeWnd(parent);
+}
+
+MAINWND_EXPORT void SetRunPath(QString strPath)
+{
+	return YQTools_Qt::SetRunPath(strPath);
+}
+
+MAINWND_EXPORT void SetScaling(float fScaling)
+{
+	return YQTools_Qt::SetScaling(fScaling);
 }

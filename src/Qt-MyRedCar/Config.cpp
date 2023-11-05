@@ -7,6 +7,7 @@
 #define CONFIG_H
 #include "macro.h"
 #include "Config.h"
+#include "../three/YQTools_Qt/YQTools_Qt.h"
 
 Config :: Config()
 {
@@ -16,14 +17,15 @@ Config :: Config()
 
 inline void Config::IniAppParameter()
 {
-	m_strAppPath = QCoreApplication::applicationDirPath();
-	m_fScale = QGuiApplication::primaryScreen()->geometry().width() / DEVWIDTH 
-		/ (QGuiApplication::primaryScreen()->logicalDotsPerInchX() / PointDistance);
+	YQTools_Qt::SetRunPath(QCoreApplication::applicationDirPath());
+
+	/*m_fScale = QGuiApplication::primaryScreen()->geometry().width() / DEVWIDTH 
+		/ (QGuiApplication::primaryScreen()->logicalDotsPerInchX() / PointDistance);*/
 }
 
 inline void Config::IniConfigFile()
 {
-	QFile file(m_strAppPath + ConfigPath);
+	QFile file(YQTools_Qt::ToAbsolutePath(ConfigPath));
 	if (!file.open(QIODevice::ReadOnly))
 	{
 		return;
@@ -42,7 +44,7 @@ inline void Config::IniConfigFile()
 
 inline void Config::SaveConifgAll()
 {
-	QFile file(m_strAppPath + ConfigPath);
+	QFile file(YQTools_Qt::ToAbsolutePath(ConfigPath));
 	if (!file.open(QIODevice::ReadOnly))
 	{
 		return;

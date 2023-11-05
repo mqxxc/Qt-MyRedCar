@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <QFrame>
+#include <QMap>
 #include "mainwnd_global.h"
 class QHBoxLayout;
 class QVBoxLayout;
@@ -10,13 +11,15 @@ class QLineEdit;
 class QLabel;
 class QPushButton;
 
-class MAINWND_EXPORT ThemeWnd : public QFrame
+class ThemeWnd : public QFrame
 {
     Q_OBJECT
 public:
 	ThemeWnd(QWidget* parent = nullptr);
-	~ThemeWnd();
-    void LoadingRc();       //加载资源
+    virtual ~ThemeWnd();
+    virtual void LoadingRc();       //加载资源
+    virtual void ReleaseInstance(); //释放实例
+    virtual void ConnectSig(const char* strSig, QObject* obj, const char* strSlot);
 
 
 private:
@@ -34,13 +37,13 @@ private:
     uchar m_nState;
 
 	inline void IniFace();			//初始化窗体
-	inline QFrame* IniTitle();		//初始化标题栏
-	inline QFrame* IniScreen();		//初始化筛选
-	inline QFrame* IniMainBody();	//初始化主体
-	inline QFrame* IniMainBody_LT();		//初始化主体窗口的左边上部分
-	inline QFrame* IniMainBody_LB();		//初始化主体窗口的左边下部分
-	inline QFrame* IniMainBody_R();			//初始化主体窗口的右边部分
-	inline void IniData();                  //初始化数据
+    inline QFrame* IniTitle();		//初始化标题栏
+    inline QFrame* IniScreen();		//初始化筛选
+    inline QFrame* IniMainBody();	//初始化主体
+    inline QFrame* IniMainBody_LT();		//初始化主体窗口的左边上部分
+    inline QFrame* IniMainBody_LB();		//初始化主体窗口的左边下部分
+    inline QFrame* IniMainBody_R();			//初始化主体窗口的右边部分
+    inline void IniData();                  //初始化数据
     inline void SetMaxButtonState(bool bIsOnMax);
     inline bool IsOnMaxButton();
     inline void SetOrderState(bool bNormal);
@@ -49,15 +52,15 @@ private:
 signals:
     void WndClose();                            //窗口关闭
     void UnitsOrderChange(bool isDue);          //单元排列顺序发生改变
-    void LoadFinish();                          //加载资源完成
-    void UpdateDesVidoe(QString strVideoPath);  //更新左桌面视频
+    void LoadFinishSig();                       //加载资源完成
+    void UpdateDesVidoe(QString strVideoPath);  //更新桌面视频
     void MainAppExit();                         //退出程序
     void SearchUnit(QString name);              //搜索信号
 
 
 private slots:
     //标题栏按钮
-	void on_maxSize_clicked();                          //最大窗口化和复原
+    void on_maxSize_clicked();                          //最大窗口化和复原
     //top
     void on_search_inputFinish();                       //搜索内容输入完成
     void on_filter_clicked();                           //筛选按钮
@@ -65,6 +68,7 @@ private slots:
     void on_setbox_clicked();                           //设置按钮
     //middle
     void ChangeCondition(QString strCondition);         //改变排序条件
+    void LoadFinish();
     //bottom
     void on_originality_clicked();                      //浏览创意工坊
     void on_about_clicked();                            //嘤起up
@@ -76,3 +80,7 @@ private slots:
     void on_endbo_clicked();                            //退出程序
     void PreviewVideo();                                //预览窗口播放视频
 };
+
+extern "C" MAINWND_EXPORT ThemeWnd* GetThemeWnd(QWidget* parent);
+extern "C" MAINWND_EXPORT void SetRunPath(QString strPath);
+extern "C" MAINWND_EXPORT void SetScaling(float fScaling);

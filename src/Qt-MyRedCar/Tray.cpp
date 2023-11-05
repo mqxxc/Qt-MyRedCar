@@ -10,9 +10,10 @@
 #include"About.h"
 #include"Tray.h"
 #include "Config.h"
+#include "../three/YQTools_Qt/YQTools_Qt.h"
 #pragma execution_character_set("utf-8")
 
-Tray::Tray()
+Tray::Tray(QObject* parent) : QObject(parent)
 {
 	//初始化变量
     m_pTrayIco  = new QSystemTrayIcon();
@@ -50,7 +51,7 @@ void Tray::init()
 
 void Tray::InitTray()
 {
-    m_pTrayIco->setIcon(QIcon(CONFIG->m_strAppPath + appIcoPath));  //设定托盘图标
+    m_pTrayIco->setIcon(QIcon(YQTools_Qt::ToAbsolutePath(icoPath)));  //设定托盘图标
     m_pTrayIco->setToolTip(TrayTitle);                         //提示文字
     m_pTrayIco->setContextMenu(m_pMenu);
     m_pTrayIco->hide();
@@ -126,12 +127,12 @@ void Tray::ChangeScrIco()
     QPixmap pixmap;
     if (m_bVIcoState) 
     {
-        pixmap.load(CONFIG->m_strAppPath + volumeIco);
+        pixmap.load(YQTools_Qt::ToAbsolutePath(volumeIco));
         m_bVIcoState = true;
     }
     else 
     {
-        pixmap.load(CONFIG->m_strAppPath + muteIco);
+        pixmap.load(YQTools_Qt::ToAbsolutePath(muteIco));
         m_bVIcoState = false;
     }
     int w = volumeico->geometry().width();

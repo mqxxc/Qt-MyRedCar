@@ -8,8 +8,8 @@
 
 #include"StartUp.h"
 #include "Config.h"
-#include"../playVideo/playVideo.h"
-#include"../Screenshot/Screenshot.h"
+#include"../playVideo_DLL/playVideo.h"
+#include"../Screenshot_DLL/Screenshot.h"
 
 bool testApp();
 

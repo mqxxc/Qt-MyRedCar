@@ -49,4 +49,4 @@ private:
     virtual void ProcessFrame(QVideoFrame frame);
 };
 
-extern "C" SCREENSHOT_EXPORT Screenshot * GetScreenshot();
+extern "C" SCREENSHOT_EXPORT Screenshot* GetScreenshot();

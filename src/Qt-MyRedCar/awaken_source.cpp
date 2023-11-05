@@ -9,7 +9,7 @@ void Awaken_source::awaken()
 
 
 //Server
-Server::Server(QWidget* parent) 
+Server::Server(QObject* parent) : QObject(parent)
 {
     m_pHost = new QRemoteObjectHost(this);
     m_pHost->setHostUrl(QUrl("local:qtmyredcar"));
