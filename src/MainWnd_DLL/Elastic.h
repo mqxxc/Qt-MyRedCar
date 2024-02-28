@@ -30,7 +30,6 @@ protected:
     QPoint m_LTWndPoint;                              //窗口左上角对于桌面的坐标
     int m_nTitleHeight;                               //标题栏高度
 
-    void InitSubstituteWnd();                        //初始化替身
     inline bool IsInTop();
     inline bool IsInLeft();
     inline bool IsInBottom();
@@ -54,4 +53,7 @@ protected:
     void MousePressEventHandler(QMouseEvent* e);    //鼠标被按下
     void MouseReleaseEventHandler(QMouseEvent* e);  //鼠标被松开
     bool eventFilter(QObject* obj, QEvent* e);      //事件过滤器
+
+private:
+    void IniData();
 };
